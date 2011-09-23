@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>mnode-parent</artifactId>
+		<groupId>org.mnode</groupId>
+		<version>1.3</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+  <groupId>org.mnode.newsagent</groupId>
+  <artifactId>newsagent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Newsagent</name>
+  <description>A feed aggregator library for Java</description>
+  
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+        </plugin>
+        
+        <plugin>   
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+                <instructions>
+                    <Export-Package>org.mnode.newsagent.*</Export-Package>
+                    <Import-Package>*;resolution:=optional</Import-Package>
+                </instructions>
+            </configuration>
+        </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome-fetcher</artifactId>
+      <version>1.0</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>org.codehaus.groovy</groupId>
+    	<artifactId>groovy-all</artifactId>
+    	<scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>0.9.28</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>2.0</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.jackrabbit</groupId>
+    	<artifactId>jackrabbit-core</artifactId>
+    	<version>2.2.8</version>
+    	<type>bundle</type>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.spockframework</groupId>
+    	<artifactId>spock-core</artifactId>
+    	<type>jar</type>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.ccil.cowan.tagsoup</groupId>
+    	<artifactId>tagsoup</artifactId>
+    	<version>1.2.1</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
