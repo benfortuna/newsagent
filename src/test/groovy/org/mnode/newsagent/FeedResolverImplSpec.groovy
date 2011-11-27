@@ -1,4 +1,6 @@
-package org.mnode.newsagent.jcr
+package org.mnode.newsagent
+
+import org.mnode.newsagent.FeedResolverImpl;
 
 import spock.lang.Specification;
 

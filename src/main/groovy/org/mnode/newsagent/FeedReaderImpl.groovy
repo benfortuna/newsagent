@@ -1,4 +1,4 @@
-package org.mnode.newsagent.jcr
+package org.mnode.newsagent
 
 import java.net.URL
 

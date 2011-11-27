@@ -1,6 +1,7 @@
-package org.mnode.newsagent.jcr
+package org.mnode.newsagent
 
 import org.mnode.newsagent.FeedCallback;
+import org.mnode.newsagent.FeedReaderImpl;
 
 import spock.lang.Specification;
 

@@ -1,7 +1,8 @@
-package org.mnode.newsagent.jcr
+package org.mnode.newsagent
 
 
 import org.mnode.newsagent.OpmlCallback
+import org.mnode.newsagent.OpmlImporterImpl;
 
 import spock.lang.Specification
 
