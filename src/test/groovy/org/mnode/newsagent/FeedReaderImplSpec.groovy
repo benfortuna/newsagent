@@ -32,7 +32,6 @@
 package org.mnode.newsagent
 
 import org.mnode.newsagent.FeedCallback;
-import org.mnode.newsagent.FeedReaderImpl;
 
 import spock.lang.Specification;
 
@@ -55,6 +54,9 @@ class FeedReaderImplSpec extends Specification {
 			}
 			void feedEntry(URI uri, String title, String description, String[] text, URL link, Date publishedDate) {
 				println "$uri : $title : $description : $text : $link : $publishedDate"
+			}
+			void enclosure(URL url, long length, String type) {
+				println "$url : $length : $type"
 			}
 		}
 		

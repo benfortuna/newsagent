@@ -72,6 +72,10 @@ class FeedReaderImpl implements FeedReader {
 			def text = entry.contents.collect { it.value }
 			callback.feedEntry(URI.create(entry.uri), entry.title, entry.description.value,
 				text as String[], new URL(entry.link), entry.publishedDate)
+			
+			entry.enclosures.each { enclosure ->
+				callback.enclosure(enclosure.url, enclosure.length, enclosure.type)
+			}
 		}
 	}
 
