@@ -61,6 +61,7 @@ class FeedReaderImplSpec extends Specification {
 		}
 		
 		expect:
-		reader.read(new URL("http://coucou.im/feed"), callback)
+//		reader.read(new URL("http://coucou.im/feed"), callback)
+		reader.read(new FeedResolverImpl().resolve("slashdot.org")[0], callback)
 	}
 }
