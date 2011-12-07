@@ -45,4 +45,9 @@ class PathGeneratorSpec extends Specification {
 		expect:
 		println generator.generatePath(new URL('http://coucou.im/feed'))
 	}
+	
+	def 'verify bytes path generation'() {
+		expect:
+		println generator.generatePath(new File('pom.xml').bytes)
+	}
 }

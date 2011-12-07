@@ -68,8 +68,15 @@ class JcrFeedCallback implements FeedCallback {
 	}
 
 	public void enclosure(URL url, long length, String type) {
-		// TODO Auto-generated method stub
-
+		def bytes = url.bytes
+		def path = pathGenerator.generatePath(bytes)
+		node.session.save {
+			def feedNode = node
+			path.each {
+				feedNode = feedNode.addNode it
+			}
+			// TODO: add file content
+		}
 	}
 
 }
