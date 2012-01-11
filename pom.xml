@@ -16,7 +16,7 @@
 	<licenses>
 		<license>
 			<name>Newsagent - License</name>
-			<url>LICENSE</url>
+			<url>${pom.url}/license.html</url>
 		</license>
 	</licenses>
 
