@@ -12,11 +12,17 @@
 	<name>Newsagent</name>
 	<description>A feed aggregator library for Java</description>
 	<inceptionYear>2011</inceptionYear>
+	<licenses>
+		<license>
+            <name>${pom.name} - License</name>
+			<url>https://newsagent.googlecode.com/hg/LICENSE</url>
+		</license>
+	</licenses>
 
 	<scm>
-		<connection>scm:hg:https://newsagent.googlecode.com/hg/</connection>
-		<developerConnection>scm:hg:https://newsagent.googlecode.com/hg/</developerConnection>
-		<url>https://code.google.com/p/newsagent/source/browse/</url>
+		<connection>scm:hg:https://newsagent.googlecode.com/hg</connection>
+		<developerConnection>scm:hg:https://newsagent.googlecode.com/hg</developerConnection>
+		<url>https://code.google.com/p/newsagent/source/browse</url>
 	</scm>
 
 	<build>
