@@ -51,8 +51,8 @@ class JcrFeedCallback implements FeedCallback {
 			path.each {
 				feedNode = feedNode.addNode it
 			}
-			feedNode['mn:title'] == title
-			feedNode['mn:description'] == description
+			feedNode['mn:title'] = title
+			feedNode['mn:description'] = description
 		}
 	}
 
