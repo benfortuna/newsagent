@@ -31,12 +31,15 @@
  */
 package org.mnode.newsagent.jcr
 
+import groovy.util.logging.Slf4j;
+
 import javax.jcr.NamespaceException;
 
 import org.mnode.newsagent.FeedReader
 import org.mnode.newsagent.FeedReaderImpl
 import org.mnode.newsagent.FeedResolverImpl
 
+@Slf4j
 class JcrFeedCallbackSpec extends AbstractJcrSpec {
 
 	JcrFeedCallback callback
@@ -46,7 +49,7 @@ class JcrFeedCallbackSpec extends AbstractJcrSpec {
 			session.workspace.namespaceRegistry.registerNamespace('mn', 'http://mnode.org/namespace')
 		}
 		catch (NamespaceException e) {
-			println e.message
+			log.warn e.message
 		}
 		callback = [node:session.rootNode.addNode('mn:subscriptions')]
 	}
@@ -62,6 +65,12 @@ class JcrFeedCallbackSpec extends AbstractJcrSpec {
 		for (node in session.rootNode['mn:subscriptions/org/slashdot'].nodes) {
 			assert node['mn:title'].string == 'Slashdot'
 			assert node['mn:description'].string == 'News for nerds, stuff that matters'
+			
+			assert node.nodes.size > 0
+			
+			for (entry in node.nodes) {
+				log.info entry['mn:title'].string
+			}
 		}
 	}
 }

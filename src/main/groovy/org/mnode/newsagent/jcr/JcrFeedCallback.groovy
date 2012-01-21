@@ -35,6 +35,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
+import org.apache.jackrabbit.util.Text;
 import org.mnode.newsagent.FeedCallback;
 import org.mnode.newsagent.util.PathGenerator;
 
@@ -44,15 +45,17 @@ class JcrFeedCallback implements FeedCallback {
 	
 	javax.jcr.Node node
 	
+	javax.jcr.Node currentFeedNode
+	
 	public void feed(String title, String description, URL link) {
 		def path = pathGenerator.generatePath(link)
 		node.session.save {
-			def feedNode = node
+			currentFeedNode = node
 			path.each {
-				feedNode = feedNode.addNode it
+				currentFeedNode = currentFeedNode << it
 			}
-			feedNode['mn:title'] = title
-			feedNode['mn:description'] = description
+			currentFeedNode['mn:title'] = title
+			currentFeedNode['mn:description'] = description
 		}
 	}
 
@@ -63,8 +66,13 @@ class JcrFeedCallback implements FeedCallback {
 
 	public void feedEntry(URI uri, String title, String description,
 			String[] text, URL link, Date publishedDate) {
-		// TODO Auto-generated method stub
-
+			
+		currentFeedNode.session.save {
+			def entryNode = currentFeedNode << Text.escapeIllegalJcrChars(title)
+			entryNode['mn:title'] = title
+			entryNode['mn:description'] = description
+			entryNode['mn:uri'] = uri as String
+		}
 	}
 
 	public void enclosure(URL url, long length, String type) {
@@ -73,7 +81,7 @@ class JcrFeedCallback implements FeedCallback {
 		node.session.save {
 			def feedNode = node
 			path.each {
-				feedNode = feedNode.addNode it
+				feedNode = feedNode << it
 			}
 			// TODO: add file content
 		}
