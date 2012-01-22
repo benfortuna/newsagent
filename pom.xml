@@ -61,6 +61,10 @@
 					<artifactId>xercesImpl</artifactId>
 					<groupId>xerces</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>junit</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
