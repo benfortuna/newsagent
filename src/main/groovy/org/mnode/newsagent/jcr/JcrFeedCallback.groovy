@@ -72,6 +72,7 @@ class JcrFeedCallback implements FeedCallback {
 			entryNode['mn:title'] = title
 			entryNode['mn:description'] = description
 			entryNode['mn:uri'] = uri as String
+			entryNode['mn:date'] = publishedDate.toCalendar()
 		}
 	}
 

@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>org.mnode.juicer</groupId>
 			<artifactId>juicer</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>[0.9,0.9.1]</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>
