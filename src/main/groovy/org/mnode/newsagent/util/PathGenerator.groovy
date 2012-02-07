@@ -39,7 +39,7 @@ class PathGenerator {
 
 	public String[] generatePath(URL url) {
 		def path = url.host.split(/\s*\.\s*/).reverse() as List
-		path.addAll url.path.split(/\s*\/\s*/).findAll { !it.empty }
+//		path.addAll url.path.split(/\s*\/\s*/).findAll { !it.empty }
 		def digest = MessageDigest.getInstance('md5')
 		def checksum = digest.digest url.toString().bytes
 		path << new String(Hex.encode(checksum))

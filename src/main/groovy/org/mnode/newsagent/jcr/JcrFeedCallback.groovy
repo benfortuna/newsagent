@@ -56,6 +56,7 @@ class JcrFeedCallback implements FeedCallback {
 			}
 			currentFeedNode['mn:title'] = title
 			currentFeedNode['mn:description'] = description
+			currentFeedNode['mn:link'] = link as String
 		}
 	}
 
@@ -68,10 +69,16 @@ class JcrFeedCallback implements FeedCallback {
 			String[] text, URL link, Date publishedDate) {
 			
 		currentFeedNode.session.save {
-			def entryNode = currentFeedNode << Text.escapeIllegalJcrChars(title)
+			def entryNode
+			if (uri) {
+				entryNode = currentFeedNode << Text.escapeIllegalJcrChars(uri as String)
+			}
+			else {
+				entryNode = currentFeedNode << Text.escapeIllegalJcrChars(title)
+			}
 			entryNode['mn:title'] = title
 			entryNode['mn:description'] = description
-			entryNode['mn:uri'] = uri as String
+			entryNode['mn:link'] = link as String
 			entryNode['mn:date'] = publishedDate.toCalendar()
 		}
 	}

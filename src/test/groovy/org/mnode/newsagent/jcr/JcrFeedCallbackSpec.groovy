@@ -51,7 +51,7 @@ class JcrFeedCallbackSpec extends AbstractJcrSpec {
 		catch (NamespaceException e) {
 			log.warn e.message
 		}
-		callback = [node:session.rootNode.addNode('mn:subscriptions')]
+		callback = [node:session.rootNode << 'mn:subscriptions']
 	}
 	
 	def 'should load feeds into repository'() {
