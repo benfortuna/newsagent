@@ -46,7 +46,8 @@ class HtmlDecoderSpec extends Specification {
 		decoder.decode(input) == expected
 		
 		where:
-		input	| expected
-		'&amp;'	| '&'
+		input		| expected
+		'&amp;'		| '&'
+		'&times;'	| '\u00d7'
 	}
 }
