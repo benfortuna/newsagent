@@ -31,12 +31,17 @@
  */
 package org.mnode.newsagent.jcr
 
+import groovy.util.logging.Slf4j
+
 import java.net.URL
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 import org.apache.jackrabbit.util.Text
 import org.mnode.newsagent.OpmlCallback
 import org.mnode.newsagent.util.PathGenerator
 
+@Slf4j
 class JcrOpmlCallback implements OpmlCallback {
 
 	PathGenerator pathGenerator = []
@@ -48,7 +53,8 @@ class JcrOpmlCallback implements OpmlCallback {
 	public void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
 		def path = pathGenerator.generatePath(xmlUrl)
 		def currentFeedNode = node << 'mn:subscriptions'
-		currentFeedNode.session.save {
+		final Lock sessionLock = new ReentrantLock()
+		currentFeedNode.session.withLock(sessionLock) {
 			path.each {
 				currentFeedNode = currentFeedNode << Text.escapeIllegalJcrChars(it)
 			}
@@ -58,6 +64,19 @@ class JcrOpmlCallback implements OpmlCallback {
 			if (currentOutlineNode) {
 				currentFeedNode['mn:tag'] = currentOutlineNode
 			}
+			Thread.start {
+				try {
+					currentFeedNode.session.withLock(sessionLock) {
+						URL favicon = ['http', htmlUrl.host, '/favicon.gif']
+						currentFeedNode['mn:icon'] = currentFeedNode.session.valueFactory.createBinary(favicon.openStream())
+						save()
+					}
+				}
+				catch (IOException e) {
+					log.debug "No favicon for $htmlUrl.host"
+				}
+			}
+			save()
 		}
 		currentOutlineNode = null
 	}
