@@ -88,6 +88,7 @@ class JcrOpmlCallback implements OpmlCallback {
 			}
 			currentOutlineNode = currentOutlineNode << Text.escapeIllegalJcrChars(title)
 			currentOutlineNode.addMixin('mix:referenceable')
+			currentOutlineNode['mn:label'] = text
 		}
 	}
 
