@@ -53,7 +53,7 @@ class FeedResolverImplSpec extends Specification {
 	
 	def 'resolve multiple feeds'() {
 		expect:
-		resolver.resolve(source).length == 3
+		resolver.resolve(source).length == 2
 		
 		where:
 		source << ['coucou.im']
