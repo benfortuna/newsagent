@@ -31,6 +31,8 @@
  */
 package org.mnode.newsagent.jcr
 
+import groovy.util.logging.Slf4j;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
@@ -39,8 +41,11 @@ import org.apache.jackrabbit.util.Text;
 import org.mnode.newsagent.FeedCallback;
 import org.mnode.newsagent.util.PathGenerator;
 
+@Slf4j
 class JcrFeedCallback implements FeedCallback {
 
+	boolean downloadEnclosures = true
+	
 	PathGenerator pathGenerator = []
 	
 	javax.jcr.Node node
@@ -55,7 +60,7 @@ class JcrFeedCallback implements FeedCallback {
 				currentFeedNode = currentFeedNode << it
 			}
 			currentFeedNode['mn:title'] = title
-			currentFeedNode['mn:description'] = description
+			currentFeedNode['mn:description'] = description ?: ''
 			currentFeedNode['mn:link'] = link as String
 		}
 	}
@@ -71,28 +76,42 @@ class JcrFeedCallback implements FeedCallback {
 		currentFeedNode.session.save {
 			def entryNode
 			if (uri) {
-				entryNode = currentFeedNode << Text.escapeIllegalJcrChars(uri as String)
+				try {
+					entryNode = currentFeedNode << Text.escapeIllegalJcrChars(uri as String)
+				} catch (Exception e) {
+					log.error "Error creating node from uri: $uri"
+				}
 			}
-			else {
+			
+			if (!entryNode) {
 				entryNode = currentFeedNode << Text.escapeIllegalJcrChars(title)
 			}
+			
 			entryNode['mn:title'] = title
-			entryNode['mn:description'] = description
+			entryNode['mn:description'] = description ?: ''
 			entryNode['mn:link'] = link as String
-			entryNode['mn:date'] = publishedDate.toCalendar()
+			entryNode['mn:date'] = publishedDate?.toCalendar() ?: Calendar.instance
 		}
 	}
 
 	public void enclosure(URL url, long length, String type) {
-		def bytes = url.bytes
-		def path = pathGenerator.generatePath(bytes)
-		node.session.save {
-			def feedNode = node
-			path.each {
-				feedNode = feedNode << it
+		if (downloadEnclosures) {
+			try {
+				def bytes = url.bytes
+				def path = pathGenerator.generatePath(bytes)
+				node.session.save {
+					def feedNode = node
+					path.each {
+						feedNode = feedNode << it
+					}
+					// TODO: add file content
+				}
+			} catch (Exception e) {
+				log.error "Error loading enclosure: $url"
 			}
-			// TODO: add file content
+		}
+		else {
+			log.info "Skipping enclosure: $url"
 		}
 	}
-
 }

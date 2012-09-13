@@ -31,6 +31,8 @@
  */
 package org.mnode.newsagent
 
+import groovy.util.logging.Slf4j;
+
 import java.net.URL
 
 import org.mnode.newsagent.FeedCallback
@@ -43,6 +45,7 @@ import org.rometools.fetcher.impl.HttpURLFeedFetcher
 import com.sun.syndication.feed.synd.SyndFeed
 import com.sun.syndication.feed.synd.SyndLink
 
+@Slf4j
 class FeedReaderImpl implements FeedReader {
 
 	public void read(URL feedUrl, FeedCallback callback) {
@@ -51,10 +54,23 @@ class FeedReaderImpl implements FeedReader {
 
 		FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.instance
 		FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
-		SyndFeed feed = feedFetcher.retrieveFeed(feedUrl)
+		SyndFeed feed
+		try {
+			feed = feedFetcher.retrieveFeed(feedUrl)
+		}
+		catch (Exception e) {
+			log.error "Invalid feed: $feedUrl"
+			return
+		}
 
 		if (feed.link) {
-			callback.feed(feed.title, feed.description, new URL(feed.link))
+			URL url
+			try {
+				url = [feed.link]
+			} catch (MalformedURLException mue) {
+				url = feedUrl
+			}
+			callback.feed(feed.title, feed.description, url)
 		}
 		else {
 			def links = feed.links.collect { link ->
@@ -70,11 +86,22 @@ class FeedReaderImpl implements FeedReader {
 		
 		feed.entries.each { entry ->
 			def text = entry.contents.collect { it.value }
-			callback.feedEntry(URI.create(entry.uri), entry.title, entry.description.value,
+			URI uri
+			try {
+				uri = [entry.uri]
+			}
+			catch (Exception e) {
+				uri = [entry.link]
+			}
+			callback.feedEntry(uri, entry.title, entry.description?.value,
 				text as String[], new URL(entry.link), entry.publishedDate)
 			
 			entry.enclosures.each { enclosure ->
-				callback.enclosure(enclosure.url, enclosure.length, enclosure.type)
+				try {
+					callback.enclosure(new URL(enclosure.url), enclosure.length, enclosure.type)
+				} catch (Exception e) {
+					log.error "Error processing enclosure: $enclosure.url"
+				}
 			}
 		}
 	}
