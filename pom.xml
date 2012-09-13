@@ -14,7 +14,7 @@
 	<inceptionYear>2011</inceptionYear>
 	<licenses>
 		<license>
-            <name>${pom.name} - License</name>
+            <name>${project.name} - License</name>
 			<url>https://newsagent.googlecode.com/hg/LICENSE</url>
 		</license>
 	</licenses>
