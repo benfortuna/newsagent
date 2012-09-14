@@ -1,0 +1,8 @@
+
+  Newsagent - An RSS aggregation library
+  ======================================
+  
+  There are many RSS library implementations, however most focus on parsing feed content, without providing support for aggregation.
+  This library extends on the parsing implementations to provide support for feed aggregation and storage.
+  
+  
