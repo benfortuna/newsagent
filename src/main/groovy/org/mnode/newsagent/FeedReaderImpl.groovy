@@ -63,6 +63,8 @@ class FeedReaderImpl implements FeedReader {
 			return
 		}
 
+		callback.feed(feed.title, feed.description, feedUrl)
+		/*
 		if (feed.link) {
 			URL url
 			try {
@@ -83,6 +85,7 @@ class FeedReaderImpl implements FeedReader {
 			}
 			callback.feed(feed.title, feed.description, links as URL[])
 		}
+		*/
 		
 		feed.entries.each { entry ->
 			def text = entry.contents.collect { it.value }

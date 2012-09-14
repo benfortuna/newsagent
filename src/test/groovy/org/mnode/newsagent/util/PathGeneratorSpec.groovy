@@ -44,6 +44,7 @@ class PathGeneratorSpec extends Specification {
 	def 'verify URL path generation'() {
 		expect:
 		println generator.generatePath(new URL('http://coucou.im/feed'))
+		println generator.generatePath(new URL('http://www.abc.net.au/atthemovies/'))
 	}
 	
 	def 'verify bytes path generation'() {
