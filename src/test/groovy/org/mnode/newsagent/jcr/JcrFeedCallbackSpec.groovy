@@ -58,11 +58,11 @@ class JcrFeedCallbackSpec extends AbstractJcrSpec {
 		setup:
 		FeedReader reader = new FeedReaderImpl()
 		reader.read(new FeedResolverImpl().resolve("slashdot.org")[0], callback)
-		
+
 		expect:
-		assert session.rootNode['mn:subscriptions/org/slashdot'].nodes.size == 1
+		assert session.rootNode['mn:subscriptions/org/slashdot/rss'].nodes.size == 1
 		
-		for (node in session.rootNode['mn:subscriptions/org/slashdot'].nodes) {
+		for (node in session.rootNode['mn:subscriptions/org/slashdot/rss'].nodes) {
 			assert node['mn:title'].string == 'Slashdot'
 			assert node['mn:description'].string == 'News for nerds, stuff that matters'
 			
