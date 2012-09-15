@@ -71,7 +71,7 @@ class JcrFeedCallback implements FeedCallback {
 	}
 
 	public void feedEntry(URI uri, String title, String description,
-			String[] text, URL link, Date publishedDate) {
+			String[] text, String link, Date publishedDate) {
 			
 		currentFeedNode.session.save {
 			def entryNode
@@ -89,7 +89,7 @@ class JcrFeedCallback implements FeedCallback {
 			
 			entryNode['mn:title'] = title
 			entryNode['mn:description'] = description ?: ''
-			entryNode['mn:link'] = link as String
+			entryNode['mn:link'] = link
 			entryNode['mn:date'] = publishedDate?.toCalendar() ?: Calendar.instance
 		}
 	}

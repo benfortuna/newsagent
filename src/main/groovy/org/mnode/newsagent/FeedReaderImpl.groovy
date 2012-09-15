@@ -94,10 +94,10 @@ class FeedReaderImpl implements FeedReader {
 				uri = [entry.uri]
 			}
 			catch (Exception e) {
-				uri = [entry.link]
+				uri = new URL(entry.link).toURI()
 			}
 			callback.feedEntry(uri, entry.title, entry.description?.value,
-				text as String[], new URL(entry.link), entry.publishedDate)
+				text as String[], entry.link, entry.publishedDate)
 			
 			entry.enclosures.each { enclosure ->
 				try {

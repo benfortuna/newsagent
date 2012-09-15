@@ -32,6 +32,7 @@
 package org.mnode.newsagent.jcr
 
 import groovy.util.logging.Slf4j
+import groovyx.gpars.GParsPool;
 
 import java.net.URL
 import java.util.concurrent.locks.Lock
@@ -50,10 +51,14 @@ class JcrOpmlCallback implements OpmlCallback {
 	
 	javax.jcr.Node currentOutlineNode
 	
+	final Lock sessionLock = new ReentrantLock()
+	
 	public void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
 		def path = pathGenerator.generatePath(xmlUrl)
+		
+		log.info "Adding outline: $title [${path[-1]}]"
+		
 		def currentFeedNode = node << 'mn:subscriptions'
-		final Lock sessionLock = new ReentrantLock()
 		currentFeedNode.session.withLock(sessionLock) {
 			path.each {
 				currentFeedNode = currentFeedNode << Text.escapeIllegalJcrChars(it)
@@ -64,18 +69,25 @@ class JcrOpmlCallback implements OpmlCallback {
 			if (currentOutlineNode) {
 				currentFeedNode['mn:tag'] = currentOutlineNode
 			}
+			
 			Thread.start {
-				try {
-					currentFeedNode.session.withLock(sessionLock) {
+//			def updateFeedIcon = {
+					try {
 						URL favicon = ['http', htmlUrl.host, '/favicon.gif']
-						currentFeedNode['mn:icon'] = currentFeedNode.session.valueFactory.createBinary(favicon.openStream())
-						save()
+								def feedIcon = currentFeedNode.session.valueFactory.createBinary(favicon.openStream())
+								currentFeedNode.session.withLock(sessionLock) {
+							currentFeedNode['mn:icon'] = feedIcon
+									save()
+						}
 					}
-				}
-				catch (IOException e) {
-					log.debug "No favicon for $htmlUrl.host"
-				}
+					catch (IOException e) {
+						log.debug "No favicon for $htmlUrl.host"
+					}
 			}
+//			GParsPool.withPool {
+//				def asyncUpdateFeedIcon = updateFeedIcon.async()
+//				asyncUpdateFeedIcon()
+//			}
 			save()
 		}
 		currentOutlineNode = null

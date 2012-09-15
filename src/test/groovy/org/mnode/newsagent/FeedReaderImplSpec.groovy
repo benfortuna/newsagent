@@ -52,7 +52,7 @@ class FeedReaderImplSpec extends Specification {
 			void feed(String title, String description, URL[] links) {
 				println "$title : $description : $links"
 			}
-			void feedEntry(URI uri, String title, String description, String[] text, URL link, Date publishedDate) {
+			void feedEntry(URI uri, String title, String description, String[] text, String link, Date publishedDate) {
 				println "$uri : $title : $description : $text : $link : $publishedDate"
 			}
 			void enclosure(URL url, long length, String type) {
