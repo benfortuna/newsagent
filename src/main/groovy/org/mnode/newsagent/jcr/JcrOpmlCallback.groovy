@@ -32,11 +32,16 @@
 package org.mnode.newsagent.jcr
 
 import groovy.util.logging.Slf4j
-import groovyx.gpars.GParsPool;
 
-import java.net.URL
+import java.awt.image.BufferedImage
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
+
+import javax.imageio.ImageIO;
+
+import net.sf.image4j.codec.ico.ICODecoder
 
 import org.apache.jackrabbit.util.Text
 import org.mnode.newsagent.OpmlCallback
@@ -70,16 +75,23 @@ class JcrOpmlCallback implements OpmlCallback {
 			if (currentOutlineNode) {
 				currentFeedNode['mn:tag'] = currentOutlineNode
 			}
-			
+			CountDownLatch latch = [1]
 			Thread.start {
 //			def updateFeedIcon = {
 					try {
-						URL favicon = ['http', htmlUrl.host, '/favicon.gif']
-								def feedIcon = currentFeedNode.session.valueFactory.createBinary(favicon.openStream())
-								currentFeedNode.session.withLock(sessionLock) {
-							currentFeedNode['mn:icon'] = feedIcon
-									save()
+						URL favicon = ['http', htmlUrl.host, '/favicon.ico']
+						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
+						if (image) {
+							ByteArrayOutputStream os = new ByteArrayOutputStream();
+							ImageIO.write(image[0], "gif", os);
+							InputStream is = new ByteArrayInputStream(os.toByteArray());
+							def feedIcon = currentFeedNode.session.valueFactory.createBinary(is)
+							currentFeedNode.session.withLock(sessionLock) {
+								currentFeedNode['mn:icon'] = feedIcon
+								save()
+							}
 						}
+						latch.countDown()
 					}
 					catch (IOException e) {
 						log.debug "No favicon for $htmlUrl.host"
@@ -90,6 +102,7 @@ class JcrOpmlCallback implements OpmlCallback {
 //				asyncUpdateFeedIcon()
 //			}
 			save()
+			latch.await(5, TimeUnit.SECONDS)
 		}
 		currentOutlineNode = null
 	}
