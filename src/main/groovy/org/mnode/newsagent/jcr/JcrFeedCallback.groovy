@@ -33,9 +33,15 @@ package org.mnode.newsagent.jcr
 
 import groovy.util.logging.Slf4j;
 
+import java.awt.image.BufferedImage
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
+import javax.imageio.ImageIO;
+
+import net.sf.image4j.codec.ico.ICODecoder
 
 import org.apache.jackrabbit.util.Text;
 import org.mnode.newsagent.FeedCallback;
@@ -52,6 +58,8 @@ class JcrFeedCallback implements FeedCallback {
 	
 	javax.jcr.Node currentFeedNode
 	
+	final Lock sessionLock = new ReentrantLock()
+	
 	public void feed(String title, String description, URL link) {
 		def path = pathGenerator.generatePath(link)
 		node.session.save {
@@ -62,6 +70,29 @@ class JcrFeedCallback implements FeedCallback {
 			currentFeedNode['mn:title'] = title
 			currentFeedNode['mn:description'] = description ?: ''
 			currentFeedNode['mn:link'] = link as String
+			currentFeedNode['mn:status'] = 'OK'
+		}
+		
+		if (!currentFeedNode['mn:icon']) {
+			Thread.start {
+				try {
+					URL favicon = ['http', link.host, '/favicon.ico']
+					List<BufferedImage> image = ICODecoder.read(favicon.openStream())
+					if (image) {
+						ByteArrayOutputStream os = new ByteArrayOutputStream();
+						ImageIO.write(image[-1], "gif", os);
+						InputStream is = new ByteArrayInputStream(os.toByteArray());
+						def feedIcon = currentFeedNode.session.valueFactory.createBinary(is)
+						currentFeedNode.session.withLock(sessionLock) {
+							currentFeedNode['mn:icon'] = feedIcon
+							save()
+						}
+					}
+				}
+				catch (IOException e) {
+					log.debug "No favicon for $link.host"
+				}
+			}
 		}
 	}
 

@@ -75,34 +75,39 @@ class JcrOpmlCallback implements OpmlCallback {
 			if (currentOutlineNode) {
 				currentFeedNode['mn:tag'] = currentOutlineNode
 			}
-			CountDownLatch latch = [1]
-			Thread.start {
-//			def updateFeedIcon = {
-					try {
-						URL favicon = ['http', htmlUrl.host, '/favicon.ico']
-						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
-						if (image) {
-							ByteArrayOutputStream os = new ByteArrayOutputStream();
-							ImageIO.write(image[0], "gif", os);
-							InputStream is = new ByteArrayInputStream(os.toByteArray());
-							def feedIcon = currentFeedNode.session.valueFactory.createBinary(is)
-							currentFeedNode.session.withLock(sessionLock) {
-								currentFeedNode['mn:icon'] = feedIcon
-								save()
+			
+			/*
+			if (!currentFeedNode['mn:icon']) {
+				CountDownLatch latch = [1]
+				Thread.start {
+	//			def updateFeedIcon = {
+						try {
+							URL favicon = ['http', htmlUrl.host, '/favicon.ico']
+							List<BufferedImage> image = ICODecoder.read(favicon.openStream())
+							if (image) {
+								ByteArrayOutputStream os = new ByteArrayOutputStream();
+								ImageIO.write(image[-1], "gif", os);
+								InputStream is = new ByteArrayInputStream(os.toByteArray());
+								def feedIcon = currentFeedNode.session.valueFactory.createBinary(is)
+								currentFeedNode.session.withLock(sessionLock) {
+									currentFeedNode['mn:icon'] = feedIcon
+									save()
+								}
 							}
+							latch.countDown()
 						}
-						latch.countDown()
-					}
-					catch (IOException e) {
-						log.debug "No favicon for $htmlUrl.host"
-					}
+						catch (IOException e) {
+							log.debug "No favicon for $htmlUrl.host"
+						}
+				}
+	//			GParsPool.withPool {
+	//				def asyncUpdateFeedIcon = updateFeedIcon.async()
+	//				asyncUpdateFeedIcon()
+	//			}
 			}
-//			GParsPool.withPool {
-//				def asyncUpdateFeedIcon = updateFeedIcon.async()
-//				asyncUpdateFeedIcon()
-//			}
+			*/
 			save()
-			latch.await(5, TimeUnit.SECONDS)
+			//latch.await(5, TimeUnit.SECONDS)
 		}
 		currentOutlineNode = null
 	}
