@@ -58,7 +58,13 @@ class FeedResolverImpl implements FeedResolver {
 			throw new IllegalArgumentException("No feeds found at source: ${source}")
 		}
 		
-		def feedUrls = feeds.collect { new URL(it.@href.text()) }.unique()
+		def feedUrls = feeds.collect {
+			try {
+				new URL(it.@href.text())
+			} catch (MalformedURLException mue) {
+				new URL(sourceUrl, it.@href.text())
+			}
+		}.unique()
 	}
 
 }
