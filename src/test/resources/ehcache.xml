@@ -310,7 +310,6 @@
     <defaultCache
             maxElementsInMemory="10000"
             eternal="false"
-            diskPersistent="true"
             timeToLiveSeconds="86400"
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU">
