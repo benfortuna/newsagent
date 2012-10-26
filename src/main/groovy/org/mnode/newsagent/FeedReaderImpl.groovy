@@ -31,82 +31,102 @@
  */
 package org.mnode.newsagent
 
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
 
-import java.net.URL
-
-import org.mnode.newsagent.FeedCallback
-import org.mnode.newsagent.FeedReader
+import org.apache.jackrabbit.core.cache.ConcurrentCache.E
+import org.mnode.newsagent.util.FeedFetcherCacheImpl
 import org.rometools.fetcher.FeedFetcher
 import org.rometools.fetcher.impl.FeedFetcherCache
-import org.rometools.fetcher.impl.HashMapFeedInfoCache
 import org.rometools.fetcher.impl.HttpURLFeedFetcher
 
 import com.sun.syndication.feed.synd.SyndFeed
-import com.sun.syndication.feed.synd.SyndLink
+import com.sun.syndication.io.SyndFeedInput
+import com.sun.syndication.io.XmlReader
 
 @Slf4j
 class FeedReaderImpl implements FeedReader {
 
-	public void read(URL feedUrl, FeedCallback callback) {
+    private final FeedFetcherCache feedInfoCache;
+    
+    FeedReaderImpl() {
+        this(new FeedFetcherCacheImpl())
+    }
+    
+    FeedReaderImpl(FeedFetcherCache feedInfoCache) {
+        this.feedInfoCache = feedInfoCache
+    }
+    
+	void read(URL feedUrl, FeedCallback callback) {
 		// rome uses Thread.contextClassLoader..
 		Thread.currentThread().contextClassLoader = FeedReaderImpl.classLoader
 
-		FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.instance
+//		FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.instance
 		FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
 		SyndFeed feed
 		try {
 			feed = feedFetcher.retrieveFeed(feedUrl)
 		}
 		catch (Exception e) {
-			log.error "Invalid feed: $feedUrl"
+			log.error "Invalid feed: $feedUrl, $e"
+            e.printStackTrace()
 			return
 		}
-
-		callback.feed(feed.title, feed.description, feedUrl)
-		/*
-		if (feed.link) {
-			URL url
-			try {
-				url = [feed.link]
-			} catch (MalformedURLException mue) {
-				url = feedUrl
-			}
-			callback.feed(feed.title, feed.description, url)
-		}
-		else {
-			def links = feed.links.collect { link ->
-				if (link instanceof SyndLink) {
-					new URL(link.href)
-				}
-				else {
-					new URL(link)
-				}
-			}
-			callback.feed(feed.title, feed.description, links as URL[])
-		}
-		*/
-		
-		feed.entries.each { entry ->
-			def text = entry.contents.collect { it.value }
-			URI uri
-			try {
-				uri = [entry.uri]
-			}
-			catch (Exception e) {
-				uri = new URL(entry.link).toURI()
-			}
-			callback.feedEntry(uri, entry.title, entry.description?.value,
-				text as String[], entry.link, entry.publishedDate)
-			
-			entry.enclosures.each { enclosure ->
-				try {
-					callback.enclosure(new URL(enclosure.url), enclosure.length, enclosure.type)
-				} catch (Exception e) {
-					log.error "Error processing enclosure: $enclosure.url"
-				}
-			}
-		}
+        processFeed(feed, feedUrl, callback)
 	}
+    
+    void read(URL feedUrl, String username, char[] password, FeedCallback callback) {
+        HttpURLConnection httpcon = feedUrl.openConnection()
+        String encoding = new sun.misc.BASE64Encoder().encode("$username:${new String(password)}".toString().bytes)
+        httpcon.setRequestProperty("Authorization", "Basic $encoding")
+        SyndFeedInput input = []
+        SyndFeed feed = input.build(new XmlReader(httpcon))
+        processFeed(feed, feedUrl, callback)
+    }
 
+    private void processFeed(SyndFeed feed, URL feedUrl, FeedCallback callback) {
+        callback.feed(feed.title, feed.description, feedUrl)
+        /*
+        if (feed.link) {
+            URL url
+            try {
+                url = [feed.link]
+            } catch (MalformedURLException mue) {
+                url = feedUrl
+            }
+            callback.feed(feed.title, feed.description, url)
+        }
+        else {
+            def links = feed.links.collect { link ->
+                if (link instanceof SyndLink) {
+                    new URL(link.href)
+                }
+                else {
+                    new URL(link)
+                }
+            }
+            callback.feed(feed.title, feed.description, links as URL[])
+        }
+        */
+        
+        feed.entries.each { entry ->
+            def text = entry.contents.collect { it.value }
+            URI uri
+            try {
+                uri = [entry.uri]
+            }
+            catch (Exception e) {
+                uri = new URL(entry.link).toURI()
+            }
+            callback.feedEntry(uri, entry.title, entry.description?.value,
+                text as String[], entry.link, entry.publishedDate)
+            
+            entry.enclosures.each { enclosure ->
+                try {
+                    callback.enclosure(new URL(enclosure.url), enclosure.length, enclosure.type)
+                } catch (Exception e) {
+                    log.error "Error processing enclosure: $enclosure.url"
+                }
+            }
+        }
+    }
 }

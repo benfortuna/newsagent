@@ -36,4 +36,6 @@ import java.net.URL;
 public interface FeedReader {
 
 	void read(URL feedUrl, FeedCallback callback);
+	
+	void read(URL feedUrl, String user, char[] password, FeedCallback callback);
 }
