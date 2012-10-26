@@ -31,6 +31,7 @@
  */
 package org.mnode.newsagent
 
+import org.junit.Ignore;
 import org.mnode.newsagent.FeedCallback;
 
 import spock.lang.Specification;
@@ -64,6 +65,7 @@ class FeedReaderImplSpec extends Specification {
 		reader.read(new FeedResolverImpl().resolve("slashdot.org")[0], callback)
 	}
     
+	@Ignore
     def 'verify callback invocation with basic authentication'() {
         expect:
         reader.read(new URL('http://appau182dev225.appdev.corptst.anz.com:8080/nexus/service/local/feeds/authcAuthz'), 'admin', 'admin123'.toCharArray(), callback)
