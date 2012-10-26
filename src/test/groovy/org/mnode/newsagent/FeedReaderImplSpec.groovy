@@ -31,9 +31,9 @@
  */
 package org.mnode.newsagent
 
-import org.junit.Ignore;
 import org.mnode.newsagent.FeedCallback;
 
+import spock.lang.Ignore;
 import spock.lang.Specification;
 
 class FeedReaderImplSpec extends Specification {
