@@ -76,7 +76,7 @@ public class FeedFetcherCacheImpl implements FeedFetcherCache {
     public SyndFeedInfo remove(URL url) {
         Element entry = getCache().get(url);
         if (getCache().remove(url)) {
-            return (SyndFeedInfo) entry.getObjectValue();
+            return (SyndFeedInfo) entry.getValue();
         }
         return null;
     }
