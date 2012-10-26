@@ -33,7 +33,6 @@ package org.mnode.newsagent
 
 import groovy.util.logging.Slf4j
 
-import org.apache.jackrabbit.core.cache.ConcurrentCache.E
 import org.mnode.newsagent.util.FeedFetcherCacheImpl
 import org.rometools.fetcher.FeedFetcher
 import org.rometools.fetcher.impl.FeedFetcherCache
