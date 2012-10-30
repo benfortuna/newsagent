@@ -73,7 +73,12 @@ class JcrOpmlCallback implements OpmlCallback {
 			currentFeedNode['mn:source'] = htmlUrl as String
 			currentFeedNode['mn:status'] = 'OK'
 			if (currentOutlineNode) {
-				currentFeedNode['mn:tag'] = currentOutlineNode
+				if (currentFeedNode['mn:tag']) {
+//					currentFeedNode['mn:tag'] << currentOutlineNode
+				}
+				else {
+					currentFeedNode['mn:tag'] = currentOutlineNode
+				}
 			}
 			
 			/*
