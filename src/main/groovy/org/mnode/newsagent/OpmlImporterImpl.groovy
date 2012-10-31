@@ -60,5 +60,8 @@ class OpmlImporterImpl implements OpmlImporter {
 		outline.children.each {
 			invokeCallback(it, callback)
 		}
+        if (!(outline.xmlUrl || outline.htmlUrl)) {
+            callback.outlineEnd(outline.title, outline.text)
+        }
 	}
 }

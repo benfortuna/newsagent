@@ -55,6 +55,10 @@ class OpmlImporterImplSpec extends Specification {
 				println "$title : $text"
 			}
 			
+            void outlineEnd(String title, String text) {
+                println "END: $title : $text"
+            }
+            
 			void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
 				println "$title : $text : $xmlUrl : $htmlUrl"
 			}

@@ -38,4 +38,6 @@ public interface OpmlCallback {
 	void outline(String title, String text, URL xmlUrl, URL htmlUrl);
 	
 	void outline(String title, String text);
+	
+	void outlineEnd(String title, String text);
 }

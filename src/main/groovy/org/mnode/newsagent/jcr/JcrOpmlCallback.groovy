@@ -58,7 +58,7 @@ class JcrOpmlCallback implements OpmlCallback {
 	
 	final Lock sessionLock = new ReentrantLock()
 	
-	public void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
+	void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
 		def path = pathGenerator.generatePath(xmlUrl)
 		
 		log.info "Adding outline: $title [${path[-1]}]"
@@ -74,7 +74,7 @@ class JcrOpmlCallback implements OpmlCallback {
 			currentFeedNode['mn:status'] = 'OK'
 			if (currentOutlineNode) {
 				if (currentFeedNode['mn:tag']) {
-//					currentFeedNode['mn:tag'] << currentOutlineNode
+					currentFeedNode['mn:tag'] << currentOutlineNode
 				}
 				else {
 					currentFeedNode['mn:tag'] = currentOutlineNode
@@ -114,10 +114,9 @@ class JcrOpmlCallback implements OpmlCallback {
 			save()
 			//latch.await(5, TimeUnit.SECONDS)
 		}
-		currentOutlineNode = null
 	}
 
-	public void outline(String title, String text) {
+	void outline(String title, String text) {
 		node.session.save {
 			if (!currentOutlineNode) {
 				currentOutlineNode = node << 'mn:tags'
@@ -128,4 +127,7 @@ class JcrOpmlCallback implements OpmlCallback {
 		}
 	}
 
+    void outlineEnd(String title, String text) {
+        currentOutlineNode = null
+    }
 }
