@@ -113,12 +113,12 @@
 		<dependency>
 			<groupId>rome</groupId>
 			<artifactId>rome</artifactId>
-			<version>[1.0,)</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.rometools</groupId>
 			<artifactId>rome-fetcher</artifactId>
-			<version>[1.2,)</version>
+			<version>1.2</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>xercesImpl</artifactId>
@@ -133,9 +133,7 @@
 		<dependency>
 			<groupId>org.rometools</groupId>
 			<artifactId>rome-opml</artifactId>
-			<version>[1.0,)</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
@@ -146,9 +144,7 @@
 		<dependency>
 			<groupId>org.codehaus.gpars</groupId>
 			<artifactId>gpars</artifactId>
-			<version>[0.12,)</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>1.0-beta-3</version>
 		</dependency>
 
 		<dependency>
@@ -166,7 +162,7 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>[1.1.1,)</version>
+			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -188,9 +184,7 @@
 		<dependency>
 			<groupId>org.ccil.cowan.tagsoup</groupId>
 			<artifactId>tagsoup</artifactId>
-			<version>[1.2.1,)</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mnode.juicer</groupId>
