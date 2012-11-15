@@ -62,7 +62,7 @@ class JcrFeedCallback implements FeedCallback {
 	
 	public void feed(String title, String description, URL link) {
 		def path = pathGenerator.generatePath(link)
-		node.session.save {
+		node.session.withLock(sessionLock) {
 			currentFeedNode = node
 			path.each {
 				currentFeedNode = currentFeedNode << it
@@ -71,6 +71,7 @@ class JcrFeedCallback implements FeedCallback {
 			currentFeedNode['mn:description'] = description ?: ''
 			currentFeedNode['mn:link'] = link as String
 			currentFeedNode['mn:status'] = 'OK'
+            save()
 		}
 		
 		if (!currentFeedNode['mn:icon']) {
@@ -104,13 +105,13 @@ class JcrFeedCallback implements FeedCallback {
 	public void feedEntry(URI uri, String title, String description,
 			String[] text, String link, Date publishedDate) {
 			
-		currentFeedNode.session.save {
+		currentFeedNode.session.withLock(sessionLock) {
 			def entryNode
 			if (uri) {
 				try {
 					entryNode = currentFeedNode << Text.escapeIllegalJcrChars(uri as String)
 				} catch (Exception e) {
-					log.error "Error creating node from uri: $uri"
+					log.warn "Error creating node from uri: $uri"
 				}
 			}
 			
@@ -123,6 +124,7 @@ class JcrFeedCallback implements FeedCallback {
 			entryNode['mn:link'] = link
 			entryNode['mn:date'] = publishedDate?.toCalendar() ?: Calendar.instance
 			entryNode['mn:seen'] = entryNode['mn:seen']?.boolean ?: false
+            save()
 		}
 	}
 
@@ -131,15 +133,17 @@ class JcrFeedCallback implements FeedCallback {
 			try {
 				def bytes = url.bytes
 				def path = pathGenerator.generatePath(bytes)
-				node.session.save {
+				node.session.withLock(sessionLock) {
 					def feedNode = node
 					path.each {
 						feedNode = feedNode << it
 					}
 					// TODO: add file content
+                    
+                    save()
 				}
 			} catch (Exception e) {
-				log.error "Error loading enclosure: $url"
+				log.warn "Error loading enclosure: $url"
 			}
 		}
 		else {
