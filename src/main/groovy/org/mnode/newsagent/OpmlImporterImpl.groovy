@@ -41,6 +41,10 @@ import com.sun.syndication.io.WireFeedInput;
 
 class OpmlImporterImpl implements OpmlImporter {
 
+    public void importOpml(File source, OpmlCallback callback) {
+        importOpml(new FileInputStream(source))
+    }
+    
 	public void importOpml(InputStream source, OpmlCallback callback) {
 		InputStreamReader reader = [source]
 		Opml opml = new WireFeedInput().build(reader)
