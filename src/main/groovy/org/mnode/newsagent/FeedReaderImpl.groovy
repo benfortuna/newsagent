@@ -66,8 +66,8 @@ class FeedReaderImpl implements FeedReader {
 			feed = feedFetcher.retrieveFeed(feedUrl)
 		}
 		catch (Exception e) {
-			log.error "Invalid feed: $feedUrl, $e"
-            e.printStackTrace()
+			log.warn "Invalid feed: $feedUrl, $e"
+            log.debug 'Trace:', e
 			return
 		}
         processFeed(feed, feedUrl, callback)
@@ -123,7 +123,7 @@ class FeedReaderImpl implements FeedReader {
                 try {
                     callback.enclosure(new URL(enclosure.url), enclosure.length, enclosure.type)
                 } catch (Exception e) {
-                    log.error "Error processing enclosure: $enclosure.url"
+                    log.warn "Error processing enclosure: $enclosure.url"
                 }
             }
         }
