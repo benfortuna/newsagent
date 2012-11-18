@@ -83,7 +83,7 @@ class FeedReaderImpl implements FeedReader {
     }
 
     private void processFeed(SyndFeed feed, URL feedUrl, FeedCallback callback) {
-        callback.feed(feed.title, feed.description, feedUrl)
+        callback.feed(feed.title, feed.description, feedUrl, feed.link)
         /*
         if (feed.link) {
             URL url

@@ -41,7 +41,7 @@ class FeedReaderImplSpec extends Specification {
 	FeedReaderImpl reader
     
     def callback = new FeedCallback() {
-        void feed(String title, String description, URL link) {
+        void feed(String title, String description, URL feedUrl, String link) {
             println "$title : $description : $link"
         }
         void feed(String title, String description, URL[] links) {
