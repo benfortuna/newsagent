@@ -36,4 +36,6 @@ import java.net.URL;
 public interface FeedResolver {
 
 	URL[] resolve(String source);
+	
+	URL getFavIconUrl(URL source);
 }

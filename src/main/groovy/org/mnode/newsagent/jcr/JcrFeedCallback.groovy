@@ -45,6 +45,7 @@ import net.sf.image4j.codec.ico.ICODecoder
 
 import org.apache.jackrabbit.util.Text;
 import org.mnode.newsagent.FeedCallback;
+import org.mnode.newsagent.FeedResolverImpl;
 import org.mnode.newsagent.util.PathGenerator;
 
 @Slf4j
@@ -57,6 +58,8 @@ class JcrFeedCallback implements FeedCallback {
 	javax.jcr.Node node
 	
 	javax.jcr.Node currentFeedNode
+	
+	FeedResolverImpl feedResolver = []
 	
 	final Lock sessionLock = new ReentrantLock()
 	
@@ -76,17 +79,28 @@ class JcrFeedCallback implements FeedCallback {
 		
 		// XXX: Improve this by parsing html to get the link-rel=icon..
 		if (!currentFeedNode['mn:icon']) {
+			def localFeedNode = currentFeedNode
 			Thread.start {
 				try {
-					URL favicon = ['http', link ? new URL(link).host : feedUrl.host, '/favicon.ico']
-					List<BufferedImage> image = ICODecoder.read(favicon.openStream())
-					if (image) {
+//					URL favicon = ['http', link ? new URL(link).host : feedUrl.host, '/favicon.ico']
+					URL favicon = feedResolver.getFavIconUrl(new URL(link))
+					def faviconImage = null
+					if (favicon.path.endsWith('.ico')) {
+						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
+						if (image) {
+							faviconImage = image[-1]
+						}
+					}
+					else {
+						faviconImage = ImageIO.read(favicon)
+					}
+					if (faviconImage) {
 						ByteArrayOutputStream os = new ByteArrayOutputStream();
-						ImageIO.write(image[-1], "gif", os);
+						ImageIO.write(faviconImage, 'gif', os);
 						InputStream is = new ByteArrayInputStream(os.toByteArray());
-						def feedIcon = currentFeedNode.session.valueFactory.createBinary(is)
-						currentFeedNode.session.withLock(sessionLock) {
-							currentFeedNode['mn:icon'] = feedIcon
+						def feedIcon = localFeedNode.session.valueFactory.createBinary(is)
+						localFeedNode.session.withLock(sessionLock) {
+							localFeedNode['mn:icon'] = feedIcon
 							save()
 						}
 					}
