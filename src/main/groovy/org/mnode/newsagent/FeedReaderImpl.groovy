@@ -64,13 +64,12 @@ class FeedReaderImpl implements FeedReader {
 		SyndFeed feed
 		try {
 			feed = feedFetcher.retrieveFeed(feedUrl)
+	        processFeed(feed, feedUrl, callback)
 		}
 		catch (Exception e) {
 			log.warn "Invalid feed: $feedUrl, $e"
             log.debug 'Trace:', e
-			return
 		}
-        processFeed(feed, feedUrl, callback)
 	}
     
     void read(URL feedUrl, String username, char[] password, FeedCallback callback) {
