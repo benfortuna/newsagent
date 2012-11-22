@@ -63,7 +63,7 @@ class JcrFeedCallback implements FeedCallback {
 	
 	final Lock sessionLock = new ReentrantLock()
 	
-	public void feed(String title, String description, URL feedUrl, String source) {
+	public void feed(String title, String description, URL feedUrl, String link) {
 		def path = pathGenerator.generatePath(feedUrl)
 		node.session.withLock(sessionLock) {
 			currentFeedNode = node
@@ -72,19 +72,19 @@ class JcrFeedCallback implements FeedCallback {
 			}
 			currentFeedNode['mn:title'] = title
 			currentFeedNode['mn:description'] = description ?: ''
-			currentFeedNode['mn:link'] = feedUrl as String
-		    currentFeedNode['mn:source'] = source ?: ''
+			currentFeedNode['mn:source'] = feedUrl as String
+		    currentFeedNode['mn:link'] = link ?: ''
 			currentFeedNode['mn:status'] = 'OK'
             save()
 		}
 		
 		// XXX: Improve this by parsing html to get the link-rel=icon..
-		if (!currentFeedNode['mn:icon']) {
+		if (!currentFeedNode['mn:icon'] && link) {
 			def localFeedNode = currentFeedNode
 			Thread.start {
 				try {
 //					URL favicon = ['http', link ? new URL(link).host : feedUrl.host, '/favicon.ico']
-					URL favicon = feedResolver.getFavIconUrl(new URL(source))
+					URL favicon = feedResolver.getFavIconUrl(new URL(link))
 					def faviconImage = null
 					if (favicon.path.endsWith('.ico')) {
 						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
@@ -107,7 +107,7 @@ class JcrFeedCallback implements FeedCallback {
 					}
 				}
 				catch (Exception e) {
-					log.debug "No favicon for $source"
+					log.debug "No favicon for $link"
 				}
 			}
 		}

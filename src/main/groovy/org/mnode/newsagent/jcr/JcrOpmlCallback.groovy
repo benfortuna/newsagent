@@ -69,8 +69,8 @@ class JcrOpmlCallback implements OpmlCallback {
 				currentFeedNode = currentFeedNode << Text.escapeIllegalJcrChars(it)
 			}
 			currentFeedNode['mn:title'] = title
-			currentFeedNode['mn:link'] = xmlUrl as String
-			currentFeedNode['mn:source'] = htmlUrl as String
+			currentFeedNode['mn:source'] = xmlUrl as String
+			currentFeedNode['mn:link'] = htmlUrl as String
 			currentFeedNode['mn:status'] = 'OK'
 			if (currentOutlineNode) {
 				if (currentFeedNode['mn:tag']) {
