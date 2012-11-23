@@ -29,41 +29,49 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mnode.newsagent
+package org.mnode.newsagent.util
 
-import org.mnode.newsagent.FeedResolverImpl;
+import groovy.util.logging.Slf4j
 
-import spock.lang.Specification;
+@Slf4j
+class SiteResolver {
 
-class FeedResolverImplSpec extends Specification {
-
-	FeedResolverImpl resolver
-	
-	def setup() {
-		resolver = []
-	}
-	
-	def 'resolve single feed'() {
-		expect:
-		resolver.resolve(source).length == 1
+	URL[] getFeedUrls(String source) {
+		def sourceUrl
+		try {
+			sourceUrl = new URL(source)
+		}
+		catch (MalformedURLException e) {
+			sourceUrl = new URL("http://${source}")
+		}
+		 
+		def html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(sourceUrl.content)
+		def feeds = html.head.link.findAll { it.@type == 'application/rss+xml' || it.@type == 'application/atom+xml' }
+		  
+		log.info "Found ${feeds.size()} feeds: ${feeds.collect { it.@href.text() }}"
+		  
+		if (feeds.isEmpty()) {
+			throw new IllegalArgumentException("No feeds found at source: ${source}")
+		}
 		
-		where:
-		source << ['slashdot.org', 'http://osnews.com', 'readwriteweb.com']
+		def feedUrls = feeds.collect {
+			try {
+				new URL(it.@href.text())
+			} catch (MalformedURLException mue) {
+				new URL(sourceUrl, it.@href.text())
+			}
+		}.unique()
 	}
 	
-	def 'resolve multiple feeds'() {
-		expect:
-		resolver.resolve(source).length == 2
-		
-		where:
-		source << ['coucou.im']
+	URL getFavIconUrl(URL source) {
+		def html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(source.content)
+		def shortcutIcon = html.head.link.find { it.@rel == 'shortcut icon' ||  it.@rel == 'SHORTCUT ICON' }
+		if (shortcutIcon) {
+			return new URL(source, shortcutIcon.@href.text())
+		}
+		else {
+			return new URL(source, '/favicon.ico')
+		}
 	}
-	
-	def 'resolve no feeds'() {
-		when:
-		resolver.resolve('google.com')
-		
-		then:
-		thrown(IllegalArgumentException)
-	}
+
 }

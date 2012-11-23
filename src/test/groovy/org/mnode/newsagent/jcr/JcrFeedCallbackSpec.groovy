@@ -37,7 +37,7 @@ import javax.jcr.NamespaceException;
 
 import org.mnode.newsagent.FeedReader
 import org.mnode.newsagent.FeedReaderImpl
-import org.mnode.newsagent.FeedResolverImpl
+import org.mnode.newsagent.util.SiteResolver;
 
 @Slf4j
 class JcrFeedCallbackSpec extends AbstractJcrSpec {
@@ -57,7 +57,7 @@ class JcrFeedCallbackSpec extends AbstractJcrSpec {
 	def 'should load feeds into repository'() {
 		setup:
 		FeedReader reader = new FeedReaderImpl()
-		reader.read(new FeedResolverImpl().resolve("slashdot.org")[0], callback)
+		reader.read(new SiteResolver().getFeedUrls("slashdot.org")[0], callback)
 
 		expect:
 		assert session.rootNode['mn:subscriptions/org/slashdot/rss'].nodes.size == 1

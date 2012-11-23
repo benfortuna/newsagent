@@ -45,7 +45,7 @@ import net.sf.image4j.codec.ico.ICODecoder
 
 import org.apache.jackrabbit.util.Text;
 import org.mnode.newsagent.FeedCallback;
-import org.mnode.newsagent.FeedResolverImpl;
+import org.mnode.newsagent.util.SiteResolver;
 import org.mnode.newsagent.util.PathGenerator;
 
 @Slf4j
@@ -59,7 +59,7 @@ class JcrFeedCallback implements FeedCallback {
 	
 	javax.jcr.Node currentFeedNode
 	
-	FeedResolverImpl feedResolver = []
+	SiteResolver feedResolver = []
 	
 	final Lock sessionLock = new ReentrantLock()
 	

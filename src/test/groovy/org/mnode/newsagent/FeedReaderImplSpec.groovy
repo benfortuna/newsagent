@@ -32,6 +32,7 @@
 package org.mnode.newsagent
 
 import org.mnode.newsagent.FeedCallback;
+import org.mnode.newsagent.util.SiteResolver;
 
 import spock.lang.Ignore;
 import spock.lang.Specification;
@@ -62,7 +63,7 @@ class FeedReaderImplSpec extends Specification {
 	def 'verify callback invocation'() {
 		expect:
 //		reader.read(new URL("http://coucou.im/feed"), callback)
-		reader.read(new FeedResolverImpl().resolve("slashdot.org")[0], callback)
+		reader.read(new SiteResolver().getFeedUrls("slashdot.org")[0], callback)
 	}
     
 	@Ignore

@@ -29,53 +29,41 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mnode.newsagent
+package org.mnode.newsagent.util
 
-import groovy.util.logging.Slf4j;
+import org.mnode.newsagent.util.SiteResolver;
 
-import java.net.URL;
+import spock.lang.Specification;
 
-import org.mnode.newsagent.FeedResolver;
+class SiteResolverSpec extends Specification {
 
-@Slf4j
-class FeedResolverImpl implements FeedResolver {
-
-	public URL[] resolve(String source) {
-		def sourceUrl
-		try {
-			sourceUrl = new URL(source)
-		}
-		catch (MalformedURLException e) {
-			sourceUrl = new URL("http://${source}")
-		}
-		 
-		def html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(sourceUrl.content)
-		def feeds = html.head.link.findAll { it.@type == 'application/rss+xml' || it.@type == 'application/atom+xml' }
-		  
-		log.info "Found ${feeds.size()} feeds: ${feeds.collect { it.@href.text() }}"
-		  
-		if (feeds.isEmpty()) {
-			throw new IllegalArgumentException("No feeds found at source: ${source}")
-		}
-		
-		def feedUrls = feeds.collect {
-			try {
-				new URL(it.@href.text())
-			} catch (MalformedURLException mue) {
-				new URL(sourceUrl, it.@href.text())
-			}
-		}.unique()
+	SiteResolver resolver
+	
+	def setup() {
+		resolver = []
 	}
 	
-	URL getFavIconUrl(URL source) {
-		def html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(source.content)
-		def shortcutIcon = html.head.link.find { it.@rel == 'shortcut icon' ||  it.@rel == 'SHORTCUT ICON' }
-		if (shortcutIcon) {
-			return new URL(source, shortcutIcon.@href.text())
-		}
-		else {
-			return new URL(source, '/favicon.ico')
-		}
+	def 'resolve single feed'() {
+		expect:
+		resolver.getFeedUrls(source).length == 1
+		
+		where:
+		source << ['slashdot.org', 'http://osnews.com', 'readwriteweb.com']
 	}
-
+	
+	def 'resolve multiple feeds'() {
+		expect:
+		resolver.getFeedUrls(source).length == 2
+		
+		where:
+		source << ['coucou.im']
+	}
+	
+	def 'resolve no feeds'() {
+		when:
+		resolver.getFeedUrls('google.com')
+		
+		then:
+		thrown(IllegalArgumentException)
+	}
 }
