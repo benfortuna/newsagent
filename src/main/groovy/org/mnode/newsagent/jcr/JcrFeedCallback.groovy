@@ -138,7 +138,7 @@ class JcrFeedCallback implements FeedCallback {
 			entryNode['mn:title'] = title
 			entryNode['mn:description'] = description ?: ''
 			entryNode['mn:link'] = link
-			entryNode['mn:date'] = publishedDate?.toCalendar() ?: Calendar.instance
+			entryNode['mn:date'] = publishedDate?.toCalendar() ?: entryNode['mn:date']?.date ?: Calendar.instance
 			entryNode['mn:seen'] = entryNode['mn:seen']?.boolean ?: false
             save()
 		}
