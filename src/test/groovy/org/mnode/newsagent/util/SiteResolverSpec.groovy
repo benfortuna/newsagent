@@ -66,4 +66,9 @@ class SiteResolverSpec extends Specification {
 		then:
 		thrown(IllegalArgumentException)
 	}
+	
+	def 'resolve favicon'() {
+		expect:
+		resolver.getFavIconUrl(new URL('http://groovyconsole.appspot.com/')) as String == 'http://groovyconsole.appspot.com/favicon.ico'
+	}
 }
