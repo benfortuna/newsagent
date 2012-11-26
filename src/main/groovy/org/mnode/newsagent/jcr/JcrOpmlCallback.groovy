@@ -48,15 +48,11 @@ import org.mnode.newsagent.OpmlCallback
 import org.mnode.newsagent.util.PathGenerator
 
 @Slf4j
-class JcrOpmlCallback implements OpmlCallback {
+class JcrOpmlCallback extends AbstractJcrCallback implements OpmlCallback {
 
 	PathGenerator pathGenerator = []
 	
-	javax.jcr.Node node
-	
 	javax.jcr.Node currentOutlineNode
-	
-	final Lock sessionLock = new ReentrantLock()
 	
 	void outline(String title, String text, URL xmlUrl, URL htmlUrl) {
 		def path = pathGenerator.generatePath(xmlUrl)
