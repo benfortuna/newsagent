@@ -49,21 +49,19 @@ import org.mnode.newsagent.util.SiteResolver;
 import org.mnode.newsagent.util.PathGenerator;
 
 @Slf4j
-class JcrFeedCallback implements FeedCallback {
+class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 
 	boolean downloadEnclosures = true
 	
 	PathGenerator pathGenerator = []
 	
-	javax.jcr.Node node
-	
 	javax.jcr.Node currentFeedNode
 	
 	SiteResolver feedResolver = []
 	
-	final Lock sessionLock = new ReentrantLock()
-	
-	public void feed(String title, String description, URL feedUrl, String link) {
+	public void feed(String title, String description, URL feedUrl, String link,
+        String...tags) {
+        
 		def path = pathGenerator.generatePath(feedUrl)
 		node.session.withLock(sessionLock) {
 			currentFeedNode = node
@@ -75,6 +73,15 @@ class JcrFeedCallback implements FeedCallback {
 			currentFeedNode['mn:source'] = feedUrl as String
 		    currentFeedNode['mn:link'] = link ?: ''
 			currentFeedNode['mn:status'] = 'OK'
+            tags.each {
+                def tagNode = node.session.rootNode << 'mn:tags' << it
+                if (currentFeedNode['mn:tag']) {
+                    currentFeedNode['mn:tag'] << tagNode
+                }
+                else {
+                    currentFeedNode['mn:tag'] = tagNode
+                }
+            }
             save()
 		}
 		
@@ -89,7 +96,12 @@ class JcrFeedCallback implements FeedCallback {
 					if (favicon.path.endsWith('.ico')) {
 						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
 						if (image) {
-							faviconImage = image[-1]
+                            image.each {
+                                if (!faviconImage || faviconImage.height > it.height) {
+                                    faviconImage = it
+                                }
+                            }
+//                            faviconImage = image[-1]
 						}
 					}
 					else {

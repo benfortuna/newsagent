@@ -55,7 +55,7 @@ class FeedReaderImpl implements FeedReader {
         this.feedInfoCache = feedInfoCache
     }
     
-	void read(URL feedUrl, FeedCallback callback) {
+	void read(URL feedUrl, FeedCallback callback, String...tags) {
 		// rome uses Thread.contextClassLoader..
 		Thread.currentThread().contextClassLoader = FeedReaderImpl.classLoader
 
@@ -64,7 +64,7 @@ class FeedReaderImpl implements FeedReader {
 		SyndFeed feed
 		try {
 			feed = feedFetcher.retrieveFeed(feedUrl)
-	        processFeed(feed, feedUrl, callback)
+	        processFeed(feed, feedUrl, callback, tags)
 		}
 		catch (Exception e) {
 			log.warn "Invalid feed: $feedUrl, $e"
@@ -81,8 +81,8 @@ class FeedReaderImpl implements FeedReader {
         processFeed(feed, feedUrl, callback)
     }
 
-    private void processFeed(SyndFeed feed, URL feedUrl, FeedCallback callback) {
-        callback.feed(feed.title, feed.description, feedUrl, feed.link)
+    private void processFeed(SyndFeed feed, URL feedUrl, FeedCallback callback, String...tags) {
+        callback.feed(feed.title, feed.description, feedUrl, feed.link, tags)
         /*
         if (feed.link) {
             URL url

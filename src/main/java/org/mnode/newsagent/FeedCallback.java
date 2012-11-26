@@ -37,7 +37,8 @@ import java.util.Date;
 
 public interface FeedCallback {
 
-	void feed(String title, String description, URL feedUrl, String link);
+	void feed(String title, String description, URL feedUrl, String link,
+	        String...tags);
 	
 	void feed(String title, String description, URL[] links);
 	
