@@ -153,7 +153,7 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 			if (publishedDate) {
 				entryNode['mn:date'] = publishedDate.toCalendar()
 			} else if (!entryNode['mn:date']) {
-				Calendar.instance
+				entryNode['mn:date'] = Calendar.instance
 			}
 			entryNode['mn:seen'] = entryNode['mn:seen']?.boolean ?: false
             save()
