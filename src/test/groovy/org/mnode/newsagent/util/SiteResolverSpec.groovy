@@ -71,4 +71,9 @@ class SiteResolverSpec extends Specification {
 		expect:
 		resolver.getFavIconUrl(new URL('http://groovyconsole.appspot.com/')) as String == 'http://groovyconsole.appspot.com/favicon.ico'
 	}
+	
+	def 'test extension module: getFavIcon'() {
+		expect:
+		new URL('http://google.com').getFavIconUrl() == new URL('http://google.com/favicon.ico')
+	}
 }

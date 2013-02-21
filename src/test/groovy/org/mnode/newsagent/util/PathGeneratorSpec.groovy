@@ -51,4 +51,10 @@ class PathGeneratorSpec extends Specification {
 		expect:
 		println generator.generatePath(new File('pom.xml').bytes)
 	}
+	
+	def 'test extension module: toMD5Path'() {
+		expect:
+		new URL('http://localhost').toMD5Path() == ['localhost', '86a9106ae65537651a8e456835b316ab'] as String[]
+		'http://localhost'.bytes.toMD5Path() == ['86','a9','10','6a','e6','55','37','65','1a','8e','45','68','35','b3','16','ab', '86a9106ae65537651a8e456835b316ab'] as String[]
+	}
 }

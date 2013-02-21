@@ -37,7 +37,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 class PathGenerator {
 
-	public String[] generatePath(URL url) {
+	static String[] generatePath(URL url) {
 		def path = url.host.split(/\s*\.\s*/).reverse() as List
 //		path.addAll url.path.split(/\s*\/\s*/).findAll { !it.empty }
 		def digest = MessageDigest.getInstance('md5')
@@ -45,7 +45,7 @@ class PathGenerator {
 		path << new String(Hex.encode(checksum))
 	}
 	
-	public String[] generatePath(byte[] bytes) {
+	static String[] generatePath(byte[] bytes) {
 		def digest = MessageDigest.getInstance('md5')
 		def checksum = new String(Hex.encode(digest.digest(bytes)))
 	
