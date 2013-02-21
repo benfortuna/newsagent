@@ -50,4 +50,9 @@ class HtmlDecoderSpec extends Specification {
 		'&amp;'		| '&'
 		'&times;'	| '\u00d7'
 	}
+	
+	def 'test extension module: decodeHtml'() {
+		expect:
+		'&amp;'.decodeHtml() == '&'
+	}
 }

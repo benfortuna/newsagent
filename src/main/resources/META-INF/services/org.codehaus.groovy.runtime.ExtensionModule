@@ -1,0 +1,3 @@
+moduleName = newsagent-module
+moduleVersion = ${project.version}
+extensionClasses = org.mnode.newsagent.util.HtmlDecoderExtension
