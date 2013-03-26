@@ -49,10 +49,12 @@ class HtmlDecoderSpec extends Specification {
 		input		| expected
 		'&amp;'		| '&'
 		'&times;'	| '\u00d7'
+		'&lt;'		| '<'
 	}
 	
 	def 'test extension module: decodeHtml'() {
 		expect:
 		'&amp;'.decodeHtml() == '&'
+		"&lt;i&gt;Goblinproofing One's Chicken Coop&lt;/i&gt; hailed oddest book title".decodeHtml() == "<i>Goblinproofing One's Chicken Coop</i> hailed oddest book title"
 	}
 }
