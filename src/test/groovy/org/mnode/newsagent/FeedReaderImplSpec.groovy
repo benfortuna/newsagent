@@ -35,6 +35,7 @@ import org.mnode.newsagent.FeedCallback;
 import org.mnode.newsagent.util.SiteResolver;
 
 import spock.lang.Ignore;
+import spock.lang.IgnoreRest;
 import spock.lang.Specification;
 
 class FeedReaderImplSpec extends Specification {
@@ -52,6 +53,9 @@ class FeedReaderImplSpec extends Specification {
         }
         void feedEntry(URI uri, String title, String description, String[] text, String link, Date publishedDate) {
             println "$uri : $title : $description : $text : $link : $publishedDate"
+        }
+        void feedEntry(URI uri, String title, String description, URL thumbnail, String link, Date publishedDate) {
+            println "$uri : $title : $description : $thumbnail : $link : $publishedDate"
         }
         void enclosure(URL url, long length, String type) {
             println "$url : $length : $type"
@@ -73,4 +77,9 @@ class FeedReaderImplSpec extends Specification {
         expect:
         reader.read(new URL('http://appau182dev225.appdev.corptst.anz.com:8080/nexus/service/local/feeds/authcAuthz'), 'admin', 'admin123'.toCharArray(), callback)
     }
+	
+	def 'verify callback invocation with thumbnails'() {
+		expect:
+		reader.read(new SiteResolver().getFeedUrls("reddit.com")[0], callback)
+	}
 }

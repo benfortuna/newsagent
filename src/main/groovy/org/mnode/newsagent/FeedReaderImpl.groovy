@@ -38,6 +38,8 @@ import org.rometools.fetcher.FeedFetcher
 import org.rometools.fetcher.impl.FeedFetcherCache
 import org.rometools.fetcher.impl.HttpURLFeedFetcher
 
+import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
+import com.sun.syndication.feed.module.mediarss.MediaModule;
 import com.sun.syndication.feed.synd.SyndFeed
 import com.sun.syndication.io.SyndFeedInput
 import com.sun.syndication.io.XmlReader
@@ -108,6 +110,7 @@ class FeedReaderImpl implements FeedReader {
         
         feed.entries.each { entry ->
             def text = entry.contents.collect { it.value }
+			MediaEntryModule media = entry.getModule(MediaEntryModule.URI)
             URI uri
             try {
                 uri = [entry.uri]
@@ -115,8 +118,14 @@ class FeedReaderImpl implements FeedReader {
             catch (Exception e) {
                 uri = new URL(entry.link).toURI()
             }
-            callback.feedEntry(uri, entry.title, entry.description?.value,
-                text as String[], entry.link, entry.publishedDate)
+			if (media && media.metadata.thumbnail) {
+				callback.feedEntry(uri, entry.title, entry.description?.value,
+					media.metadata.thumbnail[0].url.toURL(), entry.link, entry.publishedDate)
+			}
+			else {
+	            callback.feedEntry(uri, entry.title, entry.description?.value,
+	                text as String[], entry.link, entry.publishedDate)
+			}
             
             entry.enclosures.each { enclosure ->
                 try {

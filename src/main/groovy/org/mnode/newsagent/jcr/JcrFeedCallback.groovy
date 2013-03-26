@@ -160,6 +160,37 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 		}
 	}
 
+	public void feedEntry(URI uri, String title, String description,
+			URL thumbnail, String link, Date publishedDate) {
+			
+		currentFeedNode.session.withLock(sessionLock) {
+			def entryNode
+			if (uri) {
+				try {
+					entryNode = currentFeedNode << Text.escapeIllegalJcrChars(uri as String)
+				} catch (Exception e) {
+					log.warn "Error creating node from uri: $uri"
+				}
+			}
+			
+			if (!entryNode) {
+				entryNode = currentFeedNode << Text.escapeIllegalJcrChars(title)
+			}
+			
+			entryNode['mn:title'] = title
+			entryNode['mn:description'] = description ?: ''
+			entryNode['mn:link'] = link
+			entryNode['mn:thumbnail'] = thumbnail
+			if (publishedDate) {
+				entryNode['mn:date'] = publishedDate.toCalendar()
+			} else if (!entryNode['mn:date']) {
+				entryNode['mn:date'] = Calendar.instance
+			}
+			entryNode['mn:seen'] = entryNode['mn:seen']?.boolean ?: false
+            save()
+		}
+	}
+	
 	public void enclosure(URL url, long length, String type) {
 		if (downloadEnclosures) {
 			try {

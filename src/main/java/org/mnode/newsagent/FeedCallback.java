@@ -44,5 +44,7 @@ public interface FeedCallback {
 	
 	void feedEntry(URI uri, String title, String description, String[] text, String link, Date publishedDate);
 	
+	void feedEntry(URI uri, String title, String description, URL thumbnail, String link, Date publishedDate);
+	
 	void enclosure(URL url, long length, String type);
 }
