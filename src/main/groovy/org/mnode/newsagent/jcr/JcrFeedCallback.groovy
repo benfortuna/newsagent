@@ -48,6 +48,8 @@ import org.mnode.newsagent.FeedCallback;
 import org.mnode.newsagent.util.SiteResolver;
 import org.mnode.newsagent.util.PathGenerator;
 
+import com.sun.syndication.feed.module.mediarss.types.Thumbnail;
+
 @Slf4j
 class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 
@@ -180,7 +182,7 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 			entryNode['mn:title'] = title
 			entryNode['mn:description'] = description ?: ''
 			entryNode['mn:link'] = link
-			entryNode['mn:thumbnail'] = thumbnail
+			entryNode['mn:thumbnail'] = thumbnail as String
 			if (publishedDate) {
 				entryNode['mn:date'] = publishedDate.toCalendar()
 			} else if (!entryNode['mn:date']) {
