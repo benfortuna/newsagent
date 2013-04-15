@@ -183,8 +183,8 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 			entryNode['mn:description'] = description ?: ''
 			entryNode['mn:link'] = link
 			entryNode['mn:thumbnail'] = thumbnail as String
-      // don't allow future published dates..
-			if (publishedDate && publishedDate < new Date()) {
+			// don't allow future published dates..
+			if (publishedDate && publishedDate.before(new Date())) {
 				entryNode['mn:date'] = publishedDate.toCalendar()
 			} else if (!entryNode['mn:date']) {
 				entryNode['mn:date'] = Calendar.instance
