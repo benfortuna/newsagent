@@ -90,7 +90,7 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 		// XXX: Improve this by parsing html to get the link-rel=icon..
 		if (!currentFeedNode['mn:icon'] && link) {
 			def localFeedNode = currentFeedNode
-			Thread.start {
+//			Thread.start {
 				try {
 //					URL favicon = ['http', link ? new URL(link).host : feedUrl.host, '/favicon.ico']
 					URL favicon = feedResolver.getFavIconUrl(new URL(link))
@@ -123,7 +123,7 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 				catch (Exception e) {
 					log.debug "No favicon for $link"
 				}
-			}
+//			}
 		}
 	}
 
