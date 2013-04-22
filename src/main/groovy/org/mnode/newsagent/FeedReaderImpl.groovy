@@ -49,7 +49,7 @@ class FeedReaderImpl implements FeedReader {
 
     private final FeedFetcherCache feedInfoCache;
 	
-	private final Tidy htmlTidy = []
+	private final Tidy htmlTidy = [quiet: true, showWarnings: false]
     
     FeedReaderImpl() {
         this(new FeedFetcherCacheImpl())
