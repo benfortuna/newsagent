@@ -37,9 +37,9 @@ import org.mnode.newsagent.util.FeedFetcherCacheImpl
 import org.rometools.fetcher.FeedFetcher
 import org.rometools.fetcher.impl.FeedFetcherCache
 import org.rometools.fetcher.impl.HttpURLFeedFetcher
+import org.w3c.tidy.Tidy
 
-import com.sun.syndication.feed.module.mediarss.MediaEntryModule;
-import com.sun.syndication.feed.module.mediarss.MediaModule;
+import com.sun.syndication.feed.module.mediarss.MediaEntryModule
 import com.sun.syndication.feed.synd.SyndFeed
 import com.sun.syndication.io.SyndFeedInput
 import com.sun.syndication.io.XmlReader
@@ -48,6 +48,8 @@ import com.sun.syndication.io.XmlReader
 class FeedReaderImpl implements FeedReader {
 
     private final FeedFetcherCache feedInfoCache;
+	
+	private final Tidy htmlTidy = []
     
     FeedReaderImpl() {
         this(new FeedFetcherCacheImpl())
@@ -118,12 +120,20 @@ class FeedReaderImpl implements FeedReader {
             catch (Exception e) {
                 uri = new URL(entry.link).toURI()
             }
+			
+			String description = entry.description?.value
+			if (description) {
+				StringWriter tidyDescription = []
+				htmlTidy.parse(new StringReader(description), tidyDescription)
+				description = tidyDescription as String
+			}
+			
 			if (media && media.metadata.thumbnail) {
-				callback.feedEntry(uri, entry.title, entry.description?.value,
+				callback.feedEntry(uri, entry.title, description,
 					media.metadata.thumbnail[0].url.toURL(), entry.link, entry.publishedDate)
 			}
 			else {
-	            callback.feedEntry(uri, entry.title, entry.description?.value,
+	            callback.feedEntry(uri, entry.title, description,
 	                text as String[], entry.link, entry.publishedDate)
 			}
             
