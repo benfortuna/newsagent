@@ -66,11 +66,11 @@ class SiteResolver {
 	static URL getFavIconUrl(URL source) {
 		def html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(source.content)
 		def shortcutIcon = html.head.link.find { it.@rel.text().toLowerCase() == 'shortcut icon' }
-		if (shortcutIcon == null) {
+		if (shortcutIcon.isEmpty()) {
 			html = new XmlSlurper(new org.ccil.cowan.tagsoup.Parser()).parse(new URL(source, '/').content)
 			shortcutIcon = html.head.link.find { it.@rel.text().toLowerCase() == 'shortcut icon' }
 		}
-		if (shortcutIcon) {
+		if (!shortcutIcon.isEmpty()) {
 			return new URL(source, shortcutIcon.@href.text())
 		}
 		else {
