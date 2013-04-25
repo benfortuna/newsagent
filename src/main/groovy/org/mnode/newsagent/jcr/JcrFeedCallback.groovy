@@ -96,19 +96,26 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 					URL favicon = feedResolver.getFavIconUrl(new URL(link))
 					def faviconImage = null
 					if (favicon.path.endsWith('.ico')) {
-						List<BufferedImage> image = ICODecoder.read(favicon.openStream())
-						if (image) {
-                            image.each {
-                                if (!faviconImage || faviconImage.height > it.height) {
-                                    faviconImage = it
-                                }
-                            }
-//                            faviconImage = image[-1]
+						try {
+							List<BufferedImage> image = ICODecoder.read(favicon.openStream())
+							if (image) {
+	                            image.each {
+	                                if (!faviconImage || faviconImage.height > it.height) {
+	                                    faviconImage = it
+	                                }
+	                            }
+	//                            faviconImage = image[-1]
+							}
+						} catch (Exception e) {
+							log.error 'Failed to read icon', e
 						}
 					}
-					else {
+					
+					// fallback..
+					if (!faviconImage) {
 						faviconImage = ImageIO.read(favicon)
 					}
+					
 					if (faviconImage) {
 						ByteArrayOutputStream os = new ByteArrayOutputStream();
 						ImageIO.write(faviconImage, 'gif', os);
@@ -121,7 +128,7 @@ class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {
 					}
 				}
 				catch (Exception e) {
-					log.debug "No favicon for $link"
+					log.debug "No favicon for $link", e
 				}
 //			}
 		}
