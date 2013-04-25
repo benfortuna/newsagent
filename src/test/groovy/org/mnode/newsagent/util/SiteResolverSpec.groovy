@@ -75,5 +75,6 @@ class SiteResolverSpec extends Specification {
 	def 'test extension module: getFavIconUrl'() {
 		expect:
 		new URL('http://google.com').favIconUrl == new URL('http://google.com/favicon.ico')
+		new URL('http://wired.com').favIconUrl == new URL('http://wired.com/favicon.ico')
 	}
 }
