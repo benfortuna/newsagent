@@ -80,11 +80,22 @@ class FeedReaderImpl implements FeedReader {
         HttpURLConnection httpcon = feedUrl.openConnection()
         String encoding = new sun.misc.BASE64Encoder().encode("$username:${new String(password)}".toString().bytes)
         httpcon.setRequestProperty("Authorization", "Basic $encoding")
+        setProxyRequestHeaders(httpcon)
         SyndFeedInput input = []
         SyndFeed feed = input.build(new XmlReader(httpcon))
         processFeed(feed, feedUrl, callback)
     }
 
+    private void setProxyRequestHeaders(HttpURLConnection httpcon) {
+      if (System.properties['proxyUser']) {
+        String username = System.properties['proxyUser']
+        String password = System.properties['proxyPassword']
+        String encoding = new sun.misc.BASE64Encoder().encode("$username:${new String(password)}".toString().bytes)
+        httpcon.setRequestProperty("Proxy-Connection", "Keep-Alive")
+        httpcon.setRequestProperty("Proxy-Authorization", "Basic $encoding")
+      }
+    }
+    
     private void processFeed(SyndFeed feed, URL feedUrl, FeedCallback callback, String...tags) {
         callback.feed(feed.title, feed.description, feedUrl, feed.link, tags)
         /*
