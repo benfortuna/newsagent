@@ -65,7 +65,7 @@ class FeedReaderImpl implements FeedReader {
 
 		  try {
         SyndFeed feed
-        if (System.properties['proxyUser']) {
+        if (System.properties['http.proxyUser']) {
           HttpURLConnection httpcon = feedUrl.openConnection()
           setProxyRequestHeaders(httpcon)
           SyndFeedInput input = []
@@ -94,9 +94,9 @@ class FeedReaderImpl implements FeedReader {
     }
 
     private void setProxyRequestHeaders(HttpURLConnection httpcon) {
-      if (System.properties['proxyUser']) {
-        String username = System.properties['proxyUser']
-        String password = System.properties['proxyPassword']
+      if (System.properties['http.proxyUser']) {
+        String username = System.properties['http.proxyUser']
+        String password = System.properties['http.proxyPassword']
         String encoding = new sun.misc.BASE64Encoder().encode("$username:${new String(password)}".toString().bytes)
         httpcon.setRequestProperty("Proxy-Connection", "Keep-Alive")
         httpcon.setRequestProperty("Proxy-Authorization", "Basic $encoding")
