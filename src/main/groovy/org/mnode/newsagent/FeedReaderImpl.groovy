@@ -82,7 +82,6 @@ class FeedReaderImpl implements FeedReader {
         log.debug 'Trace:', e
 		  }
     }
-	}
     
     void read(URL feedUrl, String username, char[] password, FeedCallback callback) {
         HttpURLConnection httpcon = feedUrl.openConnection()
