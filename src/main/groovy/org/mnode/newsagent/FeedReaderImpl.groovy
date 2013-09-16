@@ -63,17 +63,25 @@ class FeedReaderImpl implements FeedReader {
 		// rome uses Thread.contextClassLoader..
 		Thread.currentThread().contextClassLoader = FeedReaderImpl.classLoader
 
+		  try {
+        SyndFeed feed
+        if (System.properties['proxyUser']) {
+          HttpURLConnection httpcon = feedUrl.openConnection()
+          setProxyRequestHeaders(httpcon)
+          SyndFeedInput input = []
+          feed = input.build(new XmlReader(httpcon))
+        } else {
 //		FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.instance
-		FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
-		SyndFeed feed
-		try {
-			feed = feedFetcher.retrieveFeed(feedUrl)
-	        processFeed(feed, feedUrl, callback, tags)
-		}
-		catch (Exception e) {
-			log.warn "Invalid feed: $feedUrl, $e"
-            log.debug 'Trace:', e
-		}
+          FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
+          feed = feedFetcher.retrieveFeed(feedUrl)
+        }
+	      processFeed(feed, feedUrl, callback, tags)
+		  }
+		  catch (Exception e) {
+			  log.warn "Invalid feed: $feedUrl, $e"
+        log.debug 'Trace:', e
+		  }
+    }
 	}
     
     void read(URL feedUrl, String username, char[] password, FeedCallback callback) {
