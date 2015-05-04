@@ -32,7 +32,9 @@ ext {
 }
 
 configurations {
+    // the embed configuration identifies dependencies to embed in an OSGi bundle.
     embed
+    embed.transitive = false
 }
 
 dependencies {
@@ -61,6 +63,7 @@ jar {
     manifest {
         instruction 'Bundle-ClassPath', ".,lib/rome-${romeVersion}.jar,lib/rome-fetcher-${romeVersion}.jar,lib/rome-opml-${romeVersion}.jar,lib/rome-modules-${romeVersion}.jar"
         instruction 'Export-Package', 'org.mnode.newsagent*,*'
+        instruction 'Import-Package', '*;resolution:=optional'
     }
 }
 
