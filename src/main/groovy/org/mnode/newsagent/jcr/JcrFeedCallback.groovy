@@ -31,24 +31,15 @@
  */
 package org.mnode.newsagent.jcr
 
-import groovy.util.logging.Slf4j;
-
-import java.awt.image.BufferedImage
-import java.net.URI;
-import java.net.URL;
-import java.util.Date;
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
-import javax.imageio.ImageIO;
-
+import groovy.util.logging.Slf4j
 import net.sf.image4j.codec.ico.ICODecoder
+import org.apache.jackrabbit.util.Text
+import org.mnode.newsagent.FeedCallback
+import org.mnode.newsagent.util.PathGenerator
+import org.mnode.newsagent.util.SiteResolver
 
-import org.apache.jackrabbit.util.Text;
-import org.mnode.newsagent.FeedCallback;
-import org.mnode.newsagent.util.SiteResolver;
-import org.mnode.newsagent.util.PathGenerator;
-
-import com.sun.syndication.feed.module.mediarss.types.Thumbnail;
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
 
 @Slf4j
 class JcrFeedCallback extends AbstractJcrCallback implements FeedCallback {

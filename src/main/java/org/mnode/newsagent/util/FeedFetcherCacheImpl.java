@@ -31,14 +31,13 @@
  */
 package org.mnode.newsagent.util;
 
-import java.net.URL;
-
+import com.rometools.fetcher.impl.FeedFetcherCache;
+import com.rometools.fetcher.impl.SyndFeedInfo;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-import org.rometools.fetcher.impl.FeedFetcherCache;
-import org.rometools.fetcher.impl.SyndFeedInfo;
+import java.net.URL;
 
 public class FeedFetcherCacheImpl implements FeedFetcherCache {
 
@@ -68,7 +67,7 @@ public class FeedFetcherCacheImpl implements FeedFetcherCache {
     public SyndFeedInfo getFeedInfo(URL url) {
         Element entry = getCache().get(url);
         if (entry != null) {
-            return (SyndFeedInfo) entry.getValue();
+            return (SyndFeedInfo) entry.getObjectValue();
         }
         return null;
     }
@@ -76,7 +75,7 @@ public class FeedFetcherCacheImpl implements FeedFetcherCache {
     public SyndFeedInfo remove(URL url) {
         Element entry = getCache().get(url);
         if (getCache().remove(url)) {
-            return (SyndFeedInfo) entry.getValue();
+            return (SyndFeedInfo) entry.getObjectValue();
         }
         return null;
     }

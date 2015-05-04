@@ -29,15 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.mnode.newsagent;
+package org.mnode.newsagent
 
-import java.io.InputStream;
-
-import org.mnode.newsagent.OpmlCallback;
-import org.mnode.newsagent.OpmlImporter;
-
-import com.sun.syndication.feed.opml.Opml;
-import com.sun.syndication.io.WireFeedInput;
+import com.rometools.opml.feed.opml.Opml
+import com.rometools.rome.io.WireFeedInput
 
 class OpmlImporterImpl implements OpmlImporter {
 

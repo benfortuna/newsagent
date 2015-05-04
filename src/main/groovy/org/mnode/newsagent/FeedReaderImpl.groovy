@@ -31,18 +31,16 @@
  */
 package org.mnode.newsagent
 
+import com.rometools.fetcher.FeedFetcher
+import com.rometools.fetcher.impl.FeedFetcherCache
+import com.rometools.fetcher.impl.HttpURLFeedFetcher
+import com.rometools.modules.mediarss.MediaEntryModule
+import com.rometools.rome.feed.synd.SyndFeed
+import com.rometools.rome.io.SyndFeedInput
+import com.rometools.rome.io.XmlReader
 import groovy.util.logging.Slf4j
-
 import org.mnode.newsagent.util.FeedFetcherCacheImpl
-import org.rometools.fetcher.FeedFetcher
-import org.rometools.fetcher.impl.FeedFetcherCache
-import org.rometools.fetcher.impl.HttpURLFeedFetcher
 import org.w3c.tidy.Tidy
-
-import com.sun.syndication.feed.module.mediarss.MediaEntryModule
-import com.sun.syndication.feed.synd.SyndFeed
-import com.sun.syndication.io.SyndFeedInput
-import com.sun.syndication.io.XmlReader
 
 @Slf4j
 class FeedReaderImpl implements FeedReader {
