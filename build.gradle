@@ -4,15 +4,19 @@ buildscript {
         maven {
             url 'http://maven.tmatesoft.com/content/repositories/releases/'
         }
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
     }
 
     dependencies {
-        classpath 'au.com.ish.gradle:release:2.2.2'
+        classpath 'au.com.ish.gradle:release:2.2.2',
+                'org.figurate:gradle-bundle-plugin:master-SNAPSHOT'
     }
 }
 
 apply plugin: 'groovy'
-apply plugin: 'osgi'
+apply plugin: 'bundle'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'release'
@@ -29,12 +33,6 @@ repositories {
 
 ext {
     romeVersion = '1.5.0'
-}
-
-configurations {
-    // the embed configuration identifies dependencies to embed in an OSGi bundle.
-    embed
-    embed.transitive = false
 }
 
 dependencies {
@@ -54,14 +52,12 @@ dependencies {
             'ch.qos.logback:logback-classic:1.1.3', 'org.apache.jackrabbit:jackrabbit-core:2.10.0'
 
     embed "com.rometools:rome:$romeVersion","com.rometools:rome-fetcher:$romeVersion",
-            "com.rometools:rome-opml:$romeVersion","com.rometools:rome-modules:$romeVersion"
+            "com.rometools:rome-opml:$romeVersion","com.rometools:rome-modules:$romeVersion",
+            'net.sf.jtidy:jtidy:r938',
+            'org.ccil.cowan.tagsoup:tagsoup:1.2.1', 'org.jclarion:image4j:0.7'
 }
 jar {
-    into('lib') {
-        from configurations.embed
-    }
     manifest {
-        instruction 'Bundle-ClassPath', ".,lib/rome-${romeVersion}.jar,lib/rome-fetcher-${romeVersion}.jar,lib/rome-opml-${romeVersion}.jar,lib/rome-modules-${romeVersion}.jar"
         instruction 'Export-Package', 'org.mnode.newsagent*,*'
         instruction 'Import-Package', '*;resolution:=optional'
     }
