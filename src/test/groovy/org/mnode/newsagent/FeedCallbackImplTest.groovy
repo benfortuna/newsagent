@@ -16,7 +16,7 @@ class FeedCallbackImplTest extends Specification {
         then: 'the generated collection is as exected'
         callback.feed.title == title
         callback.feed.description == description
-        callback.feed.url == feedUrl
+        callback.feed.url == feedUrl as String
         callback.feed.links == [link]
 
         where:
