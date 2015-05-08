@@ -10,7 +10,7 @@ class FeedCallbackImpl implements FeedCallback {
     void feed(String title, String description, URL feedUrl, String link, String... tags) {
         feed.title = title
         feed.description = description
-        feed.url = feedUrl
+        feed.url = feedUrl as String
         feed.links = [link]
         feed.tags = tags as List
     }
@@ -49,7 +49,7 @@ class FeedCallbackImpl implements FeedCallback {
     @Override
     void enclosure(URL url, long length, String type) {
         feed.enclosures << [
-                url: url,
+                url: url as String,
                 length: length,
                 type: type
         ]

@@ -45,7 +45,7 @@ dependencies {
             'net.sf.ehcache:ehcache:2.10.0', 'org.jsoup:jsoup:1.8.2',
             'org.ccil.cowan.tagsoup:tagsoup:1.2.1', 'org.jclarion:image4j:0.7',
             'org.apache.jackrabbit:jackrabbit-jcr-commons:2.10.0', 'javax.jcr:jcr:2.0',
-            'org.bouncycastle:bcprov-jdk16:1.46'
+            'org.bouncycastle:bcprov-jdk16:1.46', 'org.yaml:snakeyaml:1.15'
 
     // HTTP dependecies
     compile 'org.apache.felix:org.apache.felix.scr.annotations:1.9.6', 'javax.ws.rs:jsr311-api:1.1.1'
