@@ -42,7 +42,7 @@ dependencies {
             'org.slf4j:slf4j-api:1.7.10',
             'org.codehaus.groovy:groovy-all:2.4.3',
 //            'biz.aQute.bnd:bndlib:2.4.0',
-            'net.sf.ehcache:ehcache:2.10.0', 'net.sf.jtidy:jtidy:r938',
+            'net.sf.ehcache:ehcache:2.10.0', 'org.jsoup:jsoup:1.8.2',
             'org.ccil.cowan.tagsoup:tagsoup:1.2.1', 'org.jclarion:image4j:0.7',
             'org.apache.jackrabbit:jackrabbit-jcr-commons:2.10.0', 'javax.jcr:jcr:2.0',
             'org.bouncycastle:bcprov-jdk16:1.46'
@@ -58,13 +58,13 @@ dependencies {
     embed "com.rometools:rome:$romeVersion","com.rometools:rome-fetcher:$romeVersion",
             "com.rometools:rome-opml:$romeVersion","com.rometools:rome-modules:$romeVersion",
             "com.rometools:rome-utils:$romeVersion",
-            'org.jdom:jdom:2.0.2', 'net.sf.jtidy:jtidy:r938',
+            'org.jdom:jdom:2.0.2',
             'org.ccil.cowan.tagsoup:tagsoup:1.2.1', 'org.jclarion:image4j:0.7'
 }
 jar {
     manifest {
         instruction 'Export-Package', 'org.mnode.newsagent*,*'
-        instruction 'Import-Package', '!com.rometools*,!net.sf.image4j*,!org.ccil.cowan.tagsoup*,!org.w3c.tidy*,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,javax.xml.parsers,javax.xml.validation,*'
+        instruction 'Import-Package', '!com.rometools*,!net.sf.image4j*,!org.ccil.cowan.tagsoup*,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,javax.xml.parsers,javax.xml.validation,*'
         instruction 'Service-Component', 'OSGI-INF/org.mnode.newsagent.http.FeedController.xml'
     }
 }

@@ -39,16 +39,15 @@ import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
 import groovy.util.logging.Slf4j
+import org.jsoup.Jsoup
+import org.jsoup.safety.Whitelist
 import org.mnode.newsagent.util.FeedFetcherCacheImpl
-import org.w3c.tidy.Tidy
 
 @Slf4j
 class FeedReaderImpl implements FeedReader {
 
     private final FeedFetcherCache feedInfoCache;
 	
-	private final Tidy htmlTidy = [quiet: true, showWarnings: false]
-    
     FeedReaderImpl() {
         this(new FeedFetcherCacheImpl())
     }
@@ -61,24 +60,24 @@ class FeedReaderImpl implements FeedReader {
 		// rome uses Thread.contextClassLoader..
 		Thread.currentThread().contextClassLoader = FeedReaderImpl.classLoader
 
-		  try {
-        SyndFeed feed
-        if (System.properties['http.proxyUser']) {
-          HttpURLConnection httpcon = feedUrl.openConnection()
-          setProxyRequestHeaders(httpcon)
-          SyndFeedInput input = []
-          feed = input.build(new XmlReader(httpcon))
-        } else {
+        try {
+            SyndFeed feed
+            if (System.properties['http.proxyUser']) {
+                HttpURLConnection httpcon = feedUrl.openConnection()
+                setProxyRequestHeaders(httpcon)
+                SyndFeedInput input = []
+                feed = input.build(new XmlReader(httpcon))
+            } else {
 //		FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.instance
-          FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
-          feed = feedFetcher.retrieveFeed(feedUrl)
+                FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache)
+                feed = feedFetcher.retrieveFeed(feedUrl)
+            }
+            processFeed(feed, feedUrl, callback, tags)
         }
-	      processFeed(feed, feedUrl, callback, tags)
-		  }
-		  catch (Exception e) {
-			  log.warn "Invalid feed: $feedUrl, $e"
-        log.debug 'Trace:', e
-		  }
+        catch (Exception e) {
+            log.warn "Invalid feed: $feedUrl, $e"
+            log.debug 'Trace:', e
+        }
     }
     
     void read(URL feedUrl, String username, char[] password, FeedCallback callback) {
@@ -139,9 +138,7 @@ class FeedReaderImpl implements FeedReader {
 			
 			String description = entry.description?.value
 			if (description) {
-				StringWriter tidyDescription = []
-				htmlTidy.parse(new StringReader(description), tidyDescription)
-				description = tidyDescription as String
+				description = Jsoup.clean(description, Whitelist.relaxed())
 			}
 			
 			if (media && media.metadata.thumbnail) {
