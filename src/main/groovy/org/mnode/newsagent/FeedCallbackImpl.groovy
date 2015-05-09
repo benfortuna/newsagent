@@ -4,7 +4,7 @@ package org.mnode.newsagent
  */
 class FeedCallbackImpl implements FeedCallback {
 
-    def feed = [entries: [], enclosures: []]
+    def feed = [entries: []]
 
     @Override
     void feed(String title, String description, URL feedUrl, String link, String... tags) {
@@ -48,7 +48,10 @@ class FeedCallbackImpl implements FeedCallback {
 
     @Override
     void enclosure(URL url, long length, String type) {
-        feed.enclosures << [
+        if (!feed.entries[-1].enclosures) {
+            feed.entries[-1].enclosures = []
+        }
+        feed.entries[-1].enclosures << [
                 url: url as String,
                 length: length,
                 type: type
