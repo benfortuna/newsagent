@@ -30,6 +30,13 @@ repositories {
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
+    // amdatu for REST documentation..
+    ivy {
+        url 'http://repository.amdatu.org/release/'
+        layout 'pattern', {
+            artifact "[artifact]/[artifact]-[revision].[ext]"
+        }
+    }
 }
 
 ext {
@@ -48,7 +55,8 @@ dependencies {
             'org.bouncycastle:bcprov-jdk16:1.46', 'org.yaml:snakeyaml:1.15'
 
     // HTTP dependecies
-    compile 'org.apache.felix:org.apache.felix.scr.annotations:1.9.6', 'javax.ws.rs:jsr311-api:1.1.1'
+    compile 'org.apache.felix:org.apache.felix.scr.annotations:1.9.6', 'javax.ws.rs:jsr311-api:1.1.1',
+            'org.amdatu.web.rest.doc:org.amdatu.web.rest.doc:1.1.1'
 
     runtime 'org.mnode.juicer:juicer:0.9.2-SNAPSHOT'
 
@@ -65,7 +73,7 @@ jar {
     manifest {
         instruction 'Export-Package', 'org.mnode.newsagent*,*'
         instruction 'Import-Package', '!com.rometools*,!net.sf.image4j*,!org.ccil.cowan.tagsoup*,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,javax.xml.parsers,javax.xml.validation,*'
-        instruction 'Service-Component', 'OSGI-INF/org.mnode.newsagent.http.FeedController.xml'
+        instruction 'Service-Component', 'OSGI-INF/org.mnode.newsagent.http.FeedControllerImpl.xml'
     }
 }
 

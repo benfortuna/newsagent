@@ -1,6 +1,7 @@
 package org.mnode.newsagent.http
 
 import groovy.json.JsonBuilder
+import org.amdatu.web.rest.doc.Description
 import org.apache.felix.scr.annotations.Component
 import org.apache.felix.scr.annotations.Service
 import org.mnode.newsagent.FeedCallbackImpl
@@ -8,21 +9,29 @@ import org.mnode.newsagent.FeedReader
 import org.mnode.newsagent.FeedReaderImpl
 import org.yaml.snakeyaml.Yaml
 
+import javax.ws.rs.*
+
 @Component(immediate = true)
 @Service(value = FeedController)
+@Path("feed")
+@Description("Feed management")
 class FeedControllerImpl implements FeedController {
 
     FeedReader reader = new FeedReaderImpl()
 
+    @GET
+    @Produces("application/json")
     @Override
-    String doGetJson(URL url, int limit) {
+    String doGetJson(@QueryParam("url") URL url, @DefaultValue("-1") @QueryParam("limit") int limit) {
         FeedCallbackImpl callback = []
         reader.read(url, callback)
         return new JsonBuilder(limitEntries(callback.feed, limit)).toString()
     }
 
+    @GET
+    @Produces("application/yaml")
     @Override
-    String doGetYaml(URL url, int limit) {
+    String doGetYaml(@QueryParam("url") URL url, @DefaultValue("-1") @QueryParam("limit") int limit) {
         FeedCallbackImpl callback = []
         reader.read(url, callback)
         return new Yaml().dump(limitEntries(callback.feed, limit))
