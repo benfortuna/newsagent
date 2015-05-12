@@ -1,5 +1,7 @@
 package org.mnode.newsagent.http;
 
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import java.net.URL;
 
 /**
@@ -13,7 +15,7 @@ public interface FeedController {
      * @param limit the maximum feed entries to return
      * @return a JSON string
      */
-    String doGetJson(URL url, int limit);
+    Response doGetJson(URL url, int limit, Request request);
 
     /**
      * Returns a YAML representation of the feed at the specified URL.
@@ -21,5 +23,5 @@ public interface FeedController {
      * @param limit the maximum feed entries to return
      * @return a YAML string
      */
-    String doGetYaml(URL url, int limit);
+    Response doGetYaml(URL url, int limit, Request request);
 }
