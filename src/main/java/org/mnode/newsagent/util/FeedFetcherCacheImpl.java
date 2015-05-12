@@ -39,6 +39,11 @@ import net.sf.ehcache.Element;
 
 import java.net.URL;
 
+/**
+ * A {@link FeedFetcherCache} implementation that uses an eh-cache backing cache. Note that the key in the cache
+ * is the string representation of the URL, as the {@link URL} implementation of equality is unreliable. Ideally we should
+ * use {@link java.net.URI}, however conversion from URL to URI invokes much boiler plate code to handle exceptions.
+ */
 public class FeedFetcherCacheImpl implements FeedFetcherCache {
 
     private static final String DEFAULT_CACHE_NAME = "org.mnode.newsagent.feedCache";
@@ -65,7 +70,7 @@ public class FeedFetcherCacheImpl implements FeedFetcherCache {
     }
 
     public SyndFeedInfo getFeedInfo(URL url) {
-        Element entry = getCache().get(url);
+        Element entry = getCache().get(url.toString());
         if (entry != null) {
             return (SyndFeedInfo) entry.getObjectValue();
         }
@@ -73,15 +78,15 @@ public class FeedFetcherCacheImpl implements FeedFetcherCache {
     }
 
     public SyndFeedInfo remove(URL url) {
-        Element entry = getCache().get(url);
-        if (getCache().remove(url)) {
+        Element entry = getCache().get(url.toString());
+        if (getCache().remove(url.toString())) {
             return (SyndFeedInfo) entry.getObjectValue();
         }
         return null;
     }
 
     public void setFeedInfo(URL url, SyndFeedInfo syndfeedinfo) {
-        Element entry = new Element(url, syndfeedinfo);
+        Element entry = new Element(url.toString(), syndfeedinfo);
         getCache().put(entry);
     }
 
