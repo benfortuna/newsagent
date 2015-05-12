@@ -38,4 +38,6 @@ public interface FeedReader {
 	void read(URL feedUrl, FeedCallback callback, String...tags);
 	
 	void read(URL feedUrl, String user, char[] password, FeedCallback callback);
+
+	String getETag(URL feedUrl);
 }

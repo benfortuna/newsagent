@@ -34,6 +34,7 @@ package org.mnode.newsagent
 import com.rometools.fetcher.FeedFetcher
 import com.rometools.fetcher.impl.FeedFetcherCache
 import com.rometools.fetcher.impl.HttpURLFeedFetcher
+import com.rometools.fetcher.impl.SyndFeedInfo
 import com.rometools.modules.mediarss.MediaEntryModule
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
@@ -88,6 +89,12 @@ class FeedReaderImpl implements FeedReader {
         SyndFeedInput input = []
         SyndFeed feed = input.build(new XmlReader(httpcon))
         processFeed(feed, feedUrl, callback)
+    }
+
+    @Override
+    String getETag(URL feedUrl) {
+        SyndFeedInfo feedInfo = feedInfoCache.getFeedInfo(feedUrl)
+        feedInfo ? feedInfo.ETag : null
     }
 
     private void setProxyRequestHeaders(HttpURLConnection httpcon) {
