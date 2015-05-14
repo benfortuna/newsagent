@@ -70,10 +70,16 @@ dependencies {
             'org.ccil.cowan.tagsoup:tagsoup:1.2.1', 'org.jclarion:image4j:0.7'
 }
 jar {
+    // Include project license in all artifacts
+    from(project.rootDir) {
+        include "LICENSE.txt"
+    }
+
     manifest {
         instruction 'Export-Package', 'org.mnode.newsagent*,*'
         instruction 'Import-Package', '!com.rometools*,!net.sf.image4j*,!org.ccil.cowan.tagsoup*,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,javax.xml.parsers,javax.xml.validation,*'
         instruction 'Service-Component', 'OSGI-INF/org.mnode.newsagent.http.FeedControllerImpl.xml'
+        instruction 'Bundle-Category', 'rss,feed'
     }
 }
 
@@ -147,7 +153,7 @@ uploadArchives {
                 licenses {
                     license {
                         name 'Newsagent - License'
-                        url 'https://raw.githubusercontent.com/benfortuna/newsagent/master/LICENSE'
+                        url 'https://raw.githubusercontent.com/benfortuna/newsagent/master/LICENSE.txt'
                         distribution 'repo'
                     }
                 }
