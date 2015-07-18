@@ -1,0 +1,18 @@
+language: java
+jdk:
+- oraclejdk8
+- oraclejdk7
+- openjdk7
+- openjdk6
+before_deploy: "./gradlew assembleDist"
+sudo: false
+deploy:
+  provider: releases
+  api_key:
+    secure: HKOp+zvui1S6TyWBOYjK0vg//Y4dnp5ZuLyh9kO+h5p4Rkks7K7kKfDXZaO85zSCNyJNpcv5iLAseXFqmDlp1wnOtMKCTFg733Xm4ClHGFQWfgVYXUgCYv/58ltQv8rggZUJQDOyPry+4d9I6QtbFwnXKM79JupTtq+U8CerCzU=
+  file:
+    - build/distributions/newsagent-$RELEASE_VERSION.zip
+    - build/distributions/newsagent-$RELEASE_VERSION.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
