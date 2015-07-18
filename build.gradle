@@ -12,7 +12,7 @@ buildscript {
 
     dependencies {
         classpath 'au.com.ish.gradle:release:2.2.2',
-                'org.figurate:gradle-bundle-plugin:master-SNAPSHOT'
+                'org.figurate:gradle-bundle-plugin:felix-5-SNAPSHOT'
     }
 }
 
@@ -76,7 +76,7 @@ jar {
     }
 
     manifest {
-        instruction 'Export-Package', 'org.mnode.newsagent*,*'
+        instruction 'Export-Package', 'org.mnode.newsagent*,com.rometools.rome*,com.rometools.fetcher*,*'
         instruction 'Import-Package', '!com.rometools*,!net.sf.image4j*,!org.ccil.cowan.tagsoup*,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers,javax.xml.parsers,javax.xml.validation,*'
         instruction 'Service-Component', 'OSGI-INF/org.mnode.newsagent.http.FeedControllerImpl.xml'
         instruction 'Bundle-Category', 'rss,feed'
@@ -113,7 +113,7 @@ release {
 }
 
 group = 'org.mnode.newsagent'
-version = release.projectVersion
+version = System.getenv('RELEASE_VERSION') ?: release.projectVersion
 description = '''\
 A feed aggregator library for Java
 '''
