@@ -58,8 +58,8 @@ dependencies {
             'org.bouncycastle:bcprov-jdk16:1.46', 'org.yaml:snakeyaml:1.15'
 
     // HTTP dependecies
-    compile 'org.apache.felix:org.apache.felix.scr.annotations:1.9.6', 'javax.ws.rs:jsr311-api:1.1.1',
-            'org.amdatu.web.rest.doc:org.amdatu.web.rest.doc:1.1.1'
+    compile 'org.apache.felix:org.apache.felix.scr.annotations:1.9.6', 'javax.ws.rs:jsr311-api:1.1.1'
+//            'org.amdatu.web.rest.doc:org.amdatu.web.rest.doc:1.1.1'
 
     runtime 'org.mnode.juicer:juicer:0.9.2-SNAPSHOT'
 
@@ -121,7 +121,7 @@ scmVersion {
 }
 
 group = 'org.mnode.newsagent'
-version = rootProject.scmVersion.version
+//version = scmVersion.version
 description = '''\
 A feed aggregator library for Java
 '''

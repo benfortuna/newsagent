@@ -1,8 +1,9 @@
 package org.mnode.newsagent.http
 
 import groovy.json.JsonBuilder
-import org.amdatu.web.rest.doc.Description
 import org.apache.felix.scr.annotations.Component
+
+//import org.amdatu.web.rest.doc.Description
 import org.apache.felix.scr.annotations.Property
 import org.apache.felix.scr.annotations.Service
 import org.mnode.newsagent.FeedCallbackImpl
@@ -13,10 +14,10 @@ import org.yaml.snakeyaml.Yaml
 import javax.ws.rs.*
 import javax.ws.rs.core.*
 
-@Component(immediate = true, metatype = true, description = 'Feed management REST API')
+@Component(immediate = true, metatype = true, description = 'Feed management REST API', name = 'Newsagent Feed Endpoint')
 @Service(value = FeedController)
 @Path("feed")
-@Description("Feed management")
+//@Description("Feed management")
 class FeedControllerImpl implements FeedController {
 
     @Property(longValue = 86400l, description = 'The maximum time before the client cache should be refreshed')
@@ -45,7 +46,7 @@ class FeedControllerImpl implements FeedController {
         Response.ResponseBuilder builder
         def etag = reader.getETag(url)
         if (etag) {
-            builder = request.evaluatePreconditions(new EntityTag(etag))
+            builder = request.evaluatePreconditions(new EntityTag(etag, true))
         }
 
         if (!builder) {
